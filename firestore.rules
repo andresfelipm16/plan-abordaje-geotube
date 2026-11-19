@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Entra cualquier correo @geosoluciones.com, o un correo autorizado
+    // en el documento acceso/usuarios (campo "correos", tipo array).
+    function permitido() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && (request.auth.token.email.matches('.*@geosoluciones[.]com$')
+            || request.auth.token.email in get(/databases/$(database)/documents/acceso/usuarios).data.correos);
+    }
+
+    // La lista de acceso solo se edita desde la consola de Firebase.
+    match /acceso/{d} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Datos del plan
+    match /{col}/{id} {
+      allow read, write: if permitido() && col in ['cfg', 'acts', 'forms', 'brechas', 'quiz'];
+    }
+  }
+}

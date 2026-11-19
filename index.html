@@ -1,0 +1,1096 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Plan de Abordaje Geotube</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Libre+Franklin:wght@400;500;600;700&display=swap">
+<style>
+/* Concepto: tablero de campo para el celular. Un mapa de 25 casillas (5 semanas × 5 días) es el centro; la validación se hace en una hoja a pantalla completa. */
+:root{
+  --bg:#F2F5FA; --surface:#FFFFFF; --surface2:#E8EDF6; --line:#D5DCEA;
+  --ink:#0B1B3A; --ink2:#46557A; --accent:#002060; --accent-ink:#FFFFFF;
+  --hero:#002060; --hero-ink:#FFFFFF; --lime:#92D050;
+  --ok:#2F7D32; --ok-bg:#E1F0DA; --warn:#8A5A00; --warn-bg:#FFEFC2; --bad:#B3261E; --bad-bg:#FADCDA; --idle:#5B6785; --idle-bg:#E8EDF6;
+  --shadow:none;
+  --f-body:"Libre Franklin","Franklin Gothic Book","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1226; --surface:#111C36; --surface2:#1A2848; --line:#273558;
+  --ink:#E9EEF9; --ink2:#9FB0D3; --accent:#92D050; --accent-ink:#0A1226;
+  --hero:#12306E; --hero-ink:#FFFFFF;
+  --ok:#8FD67F; --ok-bg:#1B3A24; --warn:#F0C45B; --warn-bg:#41330F; --bad:#FF9A92; --bad-bg:#4A1E1C; --idle:#A5B2D1; --idle-bg:#1D2B4D;
+  --shadow:none; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1226; --surface:#111C36; --surface2:#1A2848; --line:#273558;
+  --ink:#E9EEF9; --ink2:#9FB0D3; --accent:#92D050; --accent-ink:#0A1226;
+  --hero:#12306E; --hero-ink:#FFFFFF;
+  --ok:#8FD67F; --ok-bg:#1B3A24; --warn:#F0C45B; --warn-bg:#41330F; --bad:#FF9A92; --bad-bg:#4A1E1C; --idle:#A5B2D1; --idle-bg:#1D2B4D;
+  --shadow:none; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:720px;margin:0 auto}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);padding:12px 0 9px;display:flex;align-items:center;gap:12px;border-bottom:3px solid var(--hero);margin-bottom:14px}
+.brand{flex:1;min-width:0}
+.brand h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.06em;text-transform:uppercase;line-height:1.2}
+.brand p{margin:0;font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sync{font-size:11px;font-weight:600;padding:4px 9px;border-radius:2px;background:var(--idle-bg);color:var(--idle);white-space:nowrap}
+.sync.live{background:var(--ok-bg);color:var(--ok)}
+.sync.warn{background:var(--warn-bg);color:var(--warn)}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink);margin:24px 0 10px;font-weight:700;padding-bottom:5px;border-bottom:1px solid var(--line)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:14px;box-shadow:var(--shadow)}
+.hero{background:var(--hero);color:var(--hero-ink);border-radius:3px;padding:18px 16px 16px;box-shadow:var(--shadow)}
+.hero .lbl{font-size:12px;letter-spacing:.09em;text-transform:uppercase;opacity:.8;font-weight:600}
+.hero .big{display:flex;align-items:baseline;gap:8px;margin:4px 0 12px}
+.hero .big b{font-size:46px;font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.hero .big span{font-size:16px;opacity:.85}
+.bar{height:10px;border-radius:2px;background:rgba(255,255,255,.22);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--lime);border-radius:2px;transition:width .3s}
+.hero .sub{display:flex;justify-content:space-between;font-size:12.5px;margin-top:8px;opacity:.9}
+.counts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:10px;border:1px solid var(--line);background:var(--surface)}
+.cnt{padding:10px 6px;text-align:center;border-right:1px solid var(--line)}.cnt:last-child{border-right:0}
+.cnt b{display:block;font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
+.cnt span{font-size:11px;color:var(--ink2)}
+.cnt.ok b{color:var(--ok)} .cnt.warn b{color:var(--warn)} .cnt.bad b{color:var(--bad)}
+/* mapa */
+.map{display:grid;gap:6px}
+.mrow{display:grid;grid-template-columns:34px repeat(5,minmax(0,1fr)) 34px;gap:6px;align-items:stretch}
+.mrow .w{font-size:12px;font-weight:700;color:var(--ink2);display:flex;align-items:center}
+.mrow .n{font-size:12px;color:var(--ink2);display:flex;align-items:center;justify-content:flex-end;font-variant-numeric:tabular-nums}
+.cell{border:1.5px solid var(--line);background:var(--surface);border-radius:3px;min-height:62px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.cell b{font-size:17px;line-height:1;font-variant-numeric:tabular-nums}
+.cell small{font-size:10px;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.cell i{font-style:normal;font-size:11px;font-weight:700;line-height:1}
+.cell.pend{color:var(--idle)}
+.cell.curso{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.cell.cumplida{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.cell.brecha{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.cell.today{box-shadow:0 0 0 3px var(--lime)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12px;color:var(--ink2)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1.5px solid var(--line)}
+.legend .l-ok::before{background:var(--ok-bg);border-color:var(--ok)} .legend .l-wa::before{background:var(--warn-bg);border-color:var(--warn)} .legend .l-ba::before{background:var(--bad-bg);border-color:var(--bad)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:12px}
+.kpi b{display:block;font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--ink2)}
+.today-card{display:flex;flex-direction:column;gap:8px}
+.today-card .k{font-size:12px;color:var(--ink2);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.today-card .t{font-size:17px;font-weight:600;line-height:1.25}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:2px 7px;text-transform:uppercase;letter-spacing:.04em;border-radius:2px;background:var(--idle-bg);color:var(--idle);white-space:nowrap}
+.chip.curso{background:var(--warn-bg);color:var(--warn)} .chip.cumplida{background:var(--ok-bg);color:var(--ok)} .chip.brecha{background:var(--bad-bg);color:var(--bad)}
+.btn{min-height:54px;border-radius:4px;border:0;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px;padding:0 18px}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.small{min-height:38px;padding:0 12px;font-size:14px}
+.btn:disabled{opacity:.5}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:14px 12px;min-height:62px;text-align:left;width:100%}
+.row .d{font-family:var(--f-mono);font-size:12px;color:var(--ink2);min-width:46px}
+.row .m{flex:1;min-width:0}
+.row .m b{display:block;font-weight:600;font-size:14.5px;line-height:1.25}
+.row .m small{color:var(--ink2);font-size:12px}
+.row .sc{font-family:var(--f-mono);font-size:12px;color:var(--ink2)}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px}
+.fb{flex:none;border:1.5px solid var(--line);background:var(--surface);border-radius:2px;padding:8px 16px;font-size:14.5px;font-weight:600;min-height:46px}
+.fb[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+details.wk{margin-bottom:10px}
+details.wk>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:12px 4px;cursor:pointer;font-weight:700;font-size:15px}
+details.wk>summary::-webkit-details-marker{display:none}
+details.wk>summary .th{font-weight:400;color:var(--ink2);font-size:13px;flex:1;min-width:0}
+details.wk>summary .ct{font-family:var(--f-mono);font-size:12px;color:var(--ink2)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);display:flex;padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+nav.tabs button{flex:1;border:0;background:none;padding:8px 2px;border-radius:0;font-size:12px;font-weight:600;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:3px;min-height:58px}
+nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button[aria-current="page"]{color:var(--ink);background:none;box-shadow:inset 0 3px 0 var(--lime)}
+nav.tabs button[aria-current="page"] svg{stroke:var(--ok)}
+/* hoja de validación */
+#sheet{position:fixed;inset:0;z-index:40;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+#sheet .in{max-width:720px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+.sh-top{position:sticky;top:0;background:var(--bg);z-index:2;display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.sh-top .ttl{flex:1;min-width:0;font-size:13px;color:var(--ink2);font-weight:600}
+.sh-top .ttl b{display:block;color:var(--ink);font-size:15px}
+.iconbtn{width:44px;height:44px;border-radius:3px;border:1.5px solid var(--line);background:var(--surface);display:grid;place-items:center}
+.iconbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sh h3{font-size:19px;line-height:1.25;margin:16px 0 6px;font-weight:700}
+.sh p.lead{margin:0 0 6px;color:var(--ink2);font-size:14px}
+.kv{display:grid;gap:10px;margin-top:10px}
+.kv div{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:10px 12px}
+.kv dt{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);font-weight:600;margin-bottom:3px}
+.kv dd{margin:0;font-size:14.5px}
+.kv dd ul{margin:0;padding-left:18px}
+.code{font-family:var(--f-mono);font-size:12.5px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button{border:1.5px solid var(--line);background:var(--surface);border-radius:3px;min-height:68px;padding:6px;font-weight:600;font-size:13.5px;line-height:1.2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.seg button b{font-size:20px;font-family:var(--f-mono)}
+.seg button[aria-pressed="true"].r3{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.seg button[aria-pressed="true"].r2{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.seg button[aria-pressed="true"].r1{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.tg{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:3px;padding:12px 12px;min-height:60px}
+.tg .box{flex:none;width:26px;height:26px;border-radius:3px;border:2px solid var(--line);display:grid;place-items:center;color:transparent;font-weight:700}
+.tg[aria-pressed="true"]{border-color:var(--ok);background:var(--ok-bg)}
+.tg[aria-pressed="true"] .box{background:var(--ok);border-color:var(--ok);color:#fff}
+.tg span.t{flex:1;min-width:0}
+.tg small{display:block;color:var(--ink2);font-size:12px}
+.stack{display:flex;flex-direction:column;gap:8px}
+label.f{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);font-weight:600;margin:14px 0 6px}
+input[type=date],input[type=text],textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:3px;padding:11px 12px;min-height:46px}
+textarea{min-height:92px;resize:vertical}
+.status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:12px;margin-top:14px}
+.status .need{flex-basis:100%;font-size:13px;color:var(--ink2)}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.thumbs figure{margin:0;position:relative;aspect-ratio:1;border-radius:3px;overflow:hidden;border:1px solid var(--line);background:var(--surface2)}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs button{position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:2px;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:16px;line-height:1}
+.frow{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:10px 12px;margin-top:8px}
+.frow .fh b{font-size:14.5px;font-weight:600}
+.frow .fh small{display:block;color:var(--ink2);font-size:12px;margin-top:2px}
+.fg{display:grid;gap:8px;margin-top:8px}
+.ff{display:block}
+.fl{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);font-weight:600;margin-bottom:3px}
+.derived{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-left:4px solid var(--hero);background:var(--surface);font-size:14px}
+.derived b{font-variant-numeric:tabular-nums}
+.fbtn{margin-top:12px}
+.note{font-size:12.5px;color:var(--ink2);margin:6px 0 0}
+.empty{background:var(--surface);border:1.5px dashed var(--line);border-radius:3px;padding:18px;text-align:center;color:var(--ink2);font-size:14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:2px;font-size:13.5px;font-weight:600;z-index:60;max-width:calc(100vw - 32px)}
+.banner{background:var(--warn-bg);color:var(--warn);border-radius:3px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.bgrid{display:grid;gap:10px}
+.bitem{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.who2{display:grid;gap:12px;margin-top:14px}
+.whob{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:4px;padding:18px 16px;min-height:96px}
+.whob b{font-size:19px}
+.whob span{color:var(--ink2);font-size:14px}
+.whob:active{border-color:var(--accent)}
+.swb{font:inherit;font-size:12px;font-weight:600;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:3px;padding:6px 10px;min-height:34px;white-space:nowrap}
+.qq{margin-top:16px}
+.qt{font-weight:600;font-size:15.5px;margin:0 0 8px;line-height:1.35}
+.qo{display:flex;flex-direction:column;gap:8px}
+.qop{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:4px;padding:12px;min-height:58px;font-size:14.5px;line-height:1.3}
+.qop .qk{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:13px}
+.qop span:nth-child(2){flex:1;min-width:0}
+.qop small{flex:none;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.qop[aria-pressed=true]{border-color:var(--accent);background:var(--surface2)}
+.qop[aria-pressed=true] .qk{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.qop.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.qop.ok .qk{border-color:var(--ok)}
+.qop.bad{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.qop.bad .qk{border-color:var(--bad)}
+.bitem .h{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.bitem .h b{font-size:14px}
+@media (min-width:640px){.cell{min-height:62px}}
+.who{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none}
+.who li{display:grid;grid-template-columns:minmax(0,9.5em) 1fr;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+.who li:last-child{border-bottom:0}
+.who b{font-weight:600}
+.who span{color:var(--ink2)}
+.rolebar{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
+.rsum{display:flex;gap:16px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);padding:8px 0 4px}
+.rsum b{color:var(--ink);font-variant-numeric:tabular-nums}
+.row .m small.t{display:block;margin-top:2px;line-height:1.35}
+.th-t{font-size:22px;font-weight:700;line-height:1.2;margin:6px 0 10px}
+.th-kv{grid-template-columns:1fr 1fr}
+@media (max-width:420px){.th-kv{grid-template-columns:1fr}}
+.th-p{margin:0;font-size:14.5px}
+.th-ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.card.th-scroll{overflow-x:auto;padding:0}
+.th-scroll .note{padding:0 10px 10px}
+.tt{width:100%;border-collapse:collapse;font-size:13.5px}
+.tt th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);background:var(--surface2);padding:8px 10px;border-bottom:1px solid var(--line)}
+.tt td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tt tbody tr:last-child td{border-bottom:0}
+.tt small{color:var(--ink2);font-size:12px}
+.tt .nw{white-space:nowrap}
+.tt.sig td{height:46px}
+@media print{
+  html:root:root{--bg:#fff;--surface:#fff;--surface2:#EEF1F6;--ink:#000;--ink2:#333;--line:#BBB;--hero:#002060;--hero-ink:#fff;color-scheme:light}
+  nav.tabs,#sheet,#toast,#banner,.sync,.noprint{display:none!important}
+  body{padding:0!important;font-size:12px}
+  header.top{position:static}
+  .card,.kv div,tr,.hero{break-inside:avoid}
+  .card.th-scroll{overflow:visible}
+  .hero,.chip,.tt th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<script>window.__ready=new Promise(function(r){window.__go=r;});</script>
+<style>
+#login{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+#login .box{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--hero);border-radius:4px;padding:22px}
+#login h1{font-size:18px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.05em}
+#login p{color:var(--ink2);font-size:14px;margin:6px 0 14px}
+#login input{width:100%;font:inherit;border:1.5px solid var(--line);border-radius:3px;padding:12px;min-height:48px;margin-bottom:10px;background:var(--surface);color:var(--ink)}
+#login .msg{font-size:13.5px;margin-top:10px;color:var(--ink2)}
+#login .msg.err{color:var(--bad)}
+</style>
+<div id="login" hidden><div class="box"><h1>Plan de abordaje</h1><p>Técnico Integral de Geotube® · GeoSoluciones</p>
+<div id="lg-form"><label class="f" for="lg-mail" style="margin-top:0">Correo electrónico</label><input type="email" id="lg-mail" autocomplete="email" placeholder="nombre@geosoluciones.com">
+<label class="f" for="lg-pass">Contraseña</label><input type="password" id="lg-pass" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+<button class="btn" id="lg-in" style="width:100%">Entrar</button>
+<div style="display:flex;gap:8px;margin-top:8px"><button class="btn ghost small" id="lg-new" style="flex:1">Crear mi cuenta</button><button class="btn ghost small" id="lg-reset" style="flex:1">Olvidé la contraseña</button></div>
+<p class="msg" id="lg-msg">Primera vez: escribe tu correo, una contraseña y toca «Crear mi cuenta». Te llega un correo para verificarlo.</p></div>
+<div id="lg-verify" hidden><p>Te enviamos un correo de verificación a <b id="lg-vmail"></b>. Ábrelo, toca el enlace y vuelve aquí.</p>
+<button class="btn" id="lg-ok" style="width:100%">Ya verifiqué mi correo</button>
+<div style="display:flex;gap:8px;margin-top:8px"><button class="btn ghost small" id="lg-resend" style="flex:1">Reenviar correo</button><button class="btn ghost small" id="lg-out" style="flex:1">Usar otro correo</button></div>
+<p class="msg" id="lg-vmsg">Revisa también la carpeta de no deseados.</p></div></div></div></div>
+<div class="wrap" id="app">
+  <header class="top">
+    <div class="brand"><h1>Plan de abordaje</h1><p id="who">Técnico Integral de Geotube®</p></div>
+    <span class="sync" id="sync">Cargando</span><button class="swb" id="swb" data-act="logout" hidden>Cambiar sesión</button>
+  </header>
+  <div id="banner"></div>
+  <main id="main"></main>
+</div>
+<nav class="tabs" id="tabs" aria-label="Secciones"></nav>
+<div id="sheet" hidden role="dialog" aria-modal="true" aria-label="Validar actividad"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+const D = {"acts": [{"id": "a01", "n": 1, "sem": 1, "dia": 1, "tit": "Ingreso e inducción de Talento Humano", "act": "Ingreso, presentación al equipo, socialización del perfil del cargo, responsabilidades del rol, inducción Talento Humano y plan de abordaje.", "lect": ["GTH-FR-042 Perfil de cargo", "Reglamento interno", "Lineamientos del proceso."], "rec": ["GTH-FR-042 Perfil de cargo", "Reglamento interno", "Lineamientos del proceso.", "Inducción Talento Humano"], "rev": ["Firma del perfil de cargo", "Evaluación escrita al final de la jornada para dar cuenta de lo aprendido"], "resp": ["Talento Humano", "Líder de Proyectos"], "ent": "Perfil de cargo GTH-FR-042 firmado y evaluación escrita de inducción resuelta", "elab": "Colaborador", "fmt": "GTH-FR-042; evaluación escrita (PROPUESTO)", "crit": "Perfil firmado y evaluación con nota ≥ 80 %", "kit": 1}, {"id": "a02", "n": 2, "sem": 1, "dia": 2, "tit": "Inducción HSEQ y de Proyectos", "act": "Inducción HSEQ (SG-SST, PESV, uso de EPP, reporte de actos y condiciones inseguras y lineamientos para permisos de trabajo).\nInducción Proyectos", "lect": ["Presentación HSEQ", "Presentación Proyectos"], "rec": ["Presentación HSEQ", "Presentación Proyectos"], "rev": ["Evaluación de la inducción"], "resp": ["Líder HSEQ"], "ent": "Evaluación de la inducción HSEQ resuelta y registro de asistencia firmado", "elab": "Colaborador", "fmt": "Registro de asistencia y evaluación HSEQ (PROPUESTO)", "crit": "Evaluación con nota ≥ 80 %; cero respuestas erradas en EPP y permisos de trabajo", "kit": 2}, {"id": "a03", "n": 3, "sem": 1, "dia": 3, "tit": "Reconocimiento del proceso con Geotube®", "act": "Reconocimiento del proceso de deshidratación con Geotube®\nFlujo operativo\nRoles del equipo \nPuntos críticos de control.", "lect": ["GTH-FR-042 Perfil de cargo", "Bitácora de operación."], "rec": ["Diagrama del proceso, bitácora, recorrido en campo."], "rev": ["Recorrido guiado y validación oral del flujo del proceso."], "resp": ["Líder de Proyectos"], "ent": "Resumen de una página del flujo del proceso y los puntos críticos de control, validado oralmente", "elab": "Colaborador", "fmt": "Guía de recorrido (PROPUESTO); bitácora de operación", "crit": "Explica el flujo completo y todos los puntos críticos de control sin error grave", "kit": 3}, {"id": "a04", "n": 4, "sem": 1, "dia": 4, "tit": "Identificación de equipos", "act": "Identificación de equipos: sistema de bombeo, equipo de polímero, tanques, manifolds, válvulas, bomba de clarificado y herramientas.", "lect": ["Manual/formatos internos de equipos", "GTH-FR-042. Perfil del cargo"], "rec": ["Equipos instalados", "Checklist preoperacional, herramientas."], "rev": ["Inspección guiada y lista de chequeo diligenciada."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC", "Técnico integral de Geotube"], "ent": "Checklist de identificación de equipos diligenciado", "elab": "Colaborador", "fmt": "Checklist preoperacional (existente)", "crit": "Identifica el 100 % de los equipos listados (bombeo, polímero, tanques, manifolds, válvulas, clarificado, herramientas)", "kit": 4}, {"id": "a05", "n": 5, "sem": 1, "dia": 5, "tit": "Pruebas de jarras y retorta", "act": "Introducción a pruebas de campo y laboratorio: prueba de jarras, retorta, muestreo y variables fisicoquímicas clave de operación.", "lect": ["GPY-IN-022 Pruebas de jarras", "GPY-FR-022 Calculadora pruebas de jarras", "GTH-FR-042 Perfil del cargo"], "rec": ["Kit de laboratorio, retorta, calculadora de prueba de jarras."], "rev": ["Práctica observada y registro de resultados básicos."], "resp": ["Ingeniero QAQC", "Líder de Proyectos"], "ent": "Registro de la práctica de prueba de jarras y retorta, con resultados", "elab": "Colaborador", "fmt": "GPY-IN-022; GPY-FR-022", "crit": "Ejecuta la secuencia sin omitir pasos; resultados dentro del rango que defina el Ingeniero QAQC", "kit": 5}, {"id": "a06", "n": 6, "sem": 2, "dia": 1, "tit": "Preparación y dosificación de polímero", "act": "Preparación segura de polímero floculante y operación básica del equipo de preparación y dosificación.", "lect": ["GPY-IN-019 Ins. Dosificación de Polímero", "GPY-FR-021 Calculadora dosis equipo Polímero"], "rec": ["Equipo de polímero, tolva, compresor, agua de preparación, polímero."], "rev": ["Demostración práctica con checklist de pasos críticos."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC", "Técnico integral de Geotube"], "ent": "Checklist de pasos críticos de preparación y dosificación de polímero, firmado", "elab": "Colaborador", "fmt": "GPY-IN-019; checklist (PROPUESTO)", "crit": "Cumple el 100 % de los pasos críticos de seguridad y preparación", "kit": 6}, {"id": "a07", "n": 7, "sem": 2, "dia": 2, "tit": "Cálculo de dosis y consumo", "act": "Cálculo de dosis y consumo proyectado de polímero según resultados de pruebas y condiciones del proceso.", "lect": ["GPY-FR-021 Calculadora dosis equipo Polímero", "GPY-FR-022 Pruebas de jarras"], "rec": ["Calculadoras, resultados de pruebas, formatos de control."], "rev": ["Ejercicio práctico de cálculo y validación por el jefe inmediato."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC", "Técnico integral de Geotube"], "ent": "Cálculo de dosis y consumo proyectado de polímero, resuelto", "elab": "Colaborador", "fmt": "GPY-FR-021; GPY-FR-022", "crit": "Cálculo correcto; diferencia frente a la calculadora validada por el jefe inmediato dentro de la tolerancia que se defina", "kit": 7}, {"id": "a08", "n": 8, "sem": 2, "dia": 3, "tit": "Inventario, trazabilidad y horómetro", "act": "Control de inventario, trazabilidad de consumos, solicitud de abastecimiento y reporte diario de horas del equipo.", "lect": ["GPY-FR-025 Control dosificación Polímero; bitácora."], "rec": ["Horómetro, formatos de control, inventario físico."], "rev": ["Revisión de formato diligenciado y conciliación con inventario."], "resp": ["Líder de Proyectos", "Líder Cadena de Abastecimiento"], "ent": "Formato de control de dosificación diligenciado y conciliado con inventario y horómetro", "elab": "Colaborador", "fmt": "GPY-FR-025", "crit": "Registro completo y sin diferencias no justificadas frente al inventario físico", "kit": 8}, {"id": "a09", "n": 9, "sem": 2, "dia": 4, "tit": "Muestreo en línea y ajuste de dosis", "act": "Muestreos sistemáticos en línea, interpretación visual de la separación de fases y ajuste de dosis para uso racional del químico.", "lect": ["GPY-IN-019 Ins. Dosificación de Polímero", "GPY-FR-025", "GTH-FR-042 Perfil del cargo"], "rec": ["Puntos de muestreo, formatos de control, equipo de polímero."], "rev": ["Práctica supervisada con retroalimentación inmediata."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC", "Técnico integral de Geotube"], "ent": "Registro de muestreos en línea con el ajuste de dosis propuesto", "elab": "Colaborador", "fmt": "GPY-FR-025; GPY-IN-019", "crit": "Toma la muestra en el punto correcto, interpreta la separación de fases y propone un ajuste de dosis coherente", "kit": 8}, {"id": "a10", "n": 10, "sem": 2, "dia": 5, "tit": "Verificación del equipo de polímero", "act": "Verificación de componentes del equipo de polímero: compresor, bomba de agua, elementos de medición y control.", "lect": ["Manual de equipos"], "rec": ["Checklist preoperacional, equipo de polímero, herramientas básicas."], "rev": ["Inspección práctica y aprobación del checklist sin hallazgos críticos."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC"], "ent": "Checklist preoperacional del equipo de polímero, sin hallazgos críticos", "elab": "Colaborador", "fmt": "Checklist preoperacional (existente)", "crit": "Checklist sin hallazgos críticos", "kit": 6}, {"id": "a11", "n": 11, "sem": 3, "dia": 1, "tit": "Válvulas y manifolds", "act": "Operación de válvulas y manifolds para controlar el flujo hacia las unidades Geotube® y asegurar distribución homogénea del lodo.", "lect": ["Todos los instructivos y formatos aplicables revisados en semanas previas."], "rec": ["Manifolds, válvulas, línea de conducción, radios de comunicación."], "rev": ["Práctica supervisada en campo con corrección de maniobras."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC"], "ent": "Registro de maniobras de válvulas y manifolds, con correcciones anotadas", "elab": "Líder de Proyectos", "fmt": "Formato de práctica supervisada (PROPUESTO)", "crit": "Maniobras correctas y distribución homogénea del lodo, sin correcciones de seguridad", "kit": 9}, {"id": "a12", "n": 12, "sem": 3, "dia": 2, "tit": "Control del llenado del Geotube®", "act": "Control del llenado del Geotube®: medición de largo, ancho y altura; lectura de avances y estimación volumétrica.", "lect": ["Todos los instructivos y formatos aplicables revisados en semanas previas."], "rec": ["Cinta métrica, formatos de reporte, cronograma operativo."], "rev": ["Toma de datos en campo y validación de cálculos volumétricos."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC", "Técnico integral de Geotube"], "ent": "Reporte de llenado del Geotube®: largo, ancho, altura y volumen estimado", "elab": "Colaborador", "fmt": "Formato de reporte de llenado (existente)", "crit": "Mediciones y volumen calculado validados por el Líder de Proyectos", "kit": 10}, {"id": "a13", "n": 13, "sem": 3, "dia": 3, "tit": "Mangueras y posicionamiento", "act": "Acomodación de mangueras, verificación del posicionamiento del Geotube® y prevención de deformaciones o sobrellenado.", "lect": ["Todos los instructivos y formatos aplicables revisados en semanas previas."], "rec": ["Mangueras, puertos de entrega, elementos de izaje/apoyo autorizados."], "rev": ["Observación directa del trabajo y cumplimiento de normas de seguridad."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC", "Técnico integral de Geotube"], "ent": "Lista de observación de mangueras, posicionamiento y sobrellenado", "elab": "Líder de Proyectos", "fmt": "Lista de observación directa (PROPUESTO)", "crit": "Cumple normas de seguridad y no genera deformación ni sobrellenado", "kit": 11}, {"id": "a14", "n": 14, "sem": 3, "dia": 4, "tit": "Limpieza y clarificado", "act": "Limpieza del Geotube®, monitoreo del clarificado y detección de cambios de color o textura del fluido.", "lect": ["Todos los instructivos y formatos aplicables revisados en semanas previas."], "rec": ["Hidrolavadora o elemento suministrado, bomba de clarificado, bitácora."], "rev": ["Práctica en campo y registro de novedades operativas."], "resp": ["Líder de Proyectos"], "ent": "Bitácora del día con la limpieza del Geotube® y las novedades del clarificado", "elab": "Colaborador", "fmt": "Bitácora de operación", "crit": "Registra novedades de forma completa y oportuna", "kit": 12}, {"id": "a15", "n": 15, "sem": 3, "dia": 5, "tit": "Bomba de clarificado", "act": "Operación y seguimiento de la bomba de clarificado para mantener continuidad del proceso de deshidratación.", "lect": ["Manual de equipos"], "rec": ["Bomba de clarificado, tablero/control, checklist de operación."], "rev": ["Evaluación práctica sobre arranque, monitoreo y reporte de fallas."], "resp": ["Líder de Proyectos"], "ent": "Checklist de operación de la bomba de clarificado y reporte de fallas", "elab": "Colaborador", "fmt": "Checklist de operación (hoja 7)", "crit": "Arranca, monitorea y reporta fallas sin apoyo", "kit": 12}, {"id": "a16", "n": 16, "sem": 4, "dia": 1, "tit": "Verificación de terreno", "act": "Verificación del terreno, toma de medidas y revisión de condiciones para montaje e instalación del sistema.", "lect": ["Todos los instructivos y formatos aplicables revisados en semanas previas."], "rec": ["Plano/referencias de campo, herramientas de medición, EPP."], "rev": ["Recorrido técnico y validación de criterios mínimos de instalación."], "resp": ["Líder de Proyectos"], "ent": "Acta de verificación de terreno con las medidas tomadas", "elab": "Colaborador", "fmt": "Acta de verificación de terreno (PROPUESTO)", "crit": "Valida los criterios mínimos de instalación definidos por el Líder de Proyectos", "kit": 13}, {"id": "a17", "n": 17, "sem": 4, "dia": 2, "tit": "Corte y montaje", "act": "Corte de materiales, preparación de insumos y montaje de equipos conforme a requerimientos técnicos de operación.", "lect": ["Todos los instructivos y formatos aplicables revisados en semanas previas."], "rec": ["Materiales de montaje, herramientas, equipos e insumos del proyecto."], "rev": ["Práctica supervisada con checklist de montaje."], "resp": ["Líder de Proyectos"], "ent": "Checklist de montaje diligenciado", "elab": "Colaborador", "fmt": "Checklist de montaje (PROPUESTO)", "crit": "Montaje conforme a requerimientos técnicos, sin hallazgos críticos", "kit": 13}, {"id": "a18", "n": 18, "sem": 4, "dia": 3, "tit": "Línea de lodos", "act": "Montaje de línea de lodos y reconocimiento de la morfología de línea para operación segura y estable.", "lect": ["GPY-FR-024 Morfología de la línea de lodos."], "rec": ["Línea de lodos, accesorios, soportes, formato GPY-FR-024."], "rev": ["Revisión técnica en campo y aprobación del trazado instalado."], "resp": ["Líder de Proyectos"], "ent": "Formato de morfología de la línea de lodos diligenciado", "elab": "Colaborador", "fmt": "GPY-FR-024", "crit": "Trazado instalado aprobado en revisión técnica de campo", "kit": 14}, {"id": "a19", "n": 19, "sem": 4, "dia": 4, "tit": "Prueba hidrostática y de funcionamiento", "act": "Prueba hidrostática y prueba de funcionamiento de equipos antes del arranque operativo.", "lect": ["GPY-FR-019 Prueba hidrostática de la línea; PIC de instalación."], "rec": ["Línea instalada, agua de prueba, formatos de inspección."], "rev": ["Ejecución práctica y registro de resultados de prueba."], "resp": ["Líder de Proyectos"], "ent": "Registro de la prueba hidrostática y de la prueba de funcionamiento", "elab": "Colaborador", "fmt": "GPY-FR-019; PIC de instalación", "crit": "Prueba ejecutada y registrada con resultado conforme", "kit": 15}, {"id": "a20", "n": 20, "sem": 4, "dia": 5, "tit": "Mantenimiento básico", "act": "Mantenimiento básico, desatascamiento de bombas, abastecimiento de combustible y aviso oportuno de fallas visibles.", "lect": ["Manual de equipo"], "rec": ["Herramientas básicas, combustible, checklist de mantenimiento."], "rev": ["Práctica supervisada y validación del tiempo de respuesta."], "resp": ["Líder de Proyectos"], "ent": "Checklist de mantenimiento básico con el tiempo de respuesta medido", "elab": "Colaborador", "fmt": "Checklist de mantenimiento (hoja 7)", "crit": "Ejecuta la actividad supervisada y responde dentro del tiempo que fije el Líder de Proyectos", "kit": 16}, {"id": "a21", "n": 21, "sem": 5, "dia": 1, "tit": "Operación integral supervisada", "act": "Operación integral supervisada: polímero, bombeo, Geotube®, clarificado, registros diarios e interacción con el equipo.", "lect": ["Todos los instructivos y formatos aplicables revisados en semanas previas."], "rec": ["Sistema en operación, formatos de control, bitácora, EPP."], "rev": ["Observación en turno completo con retroalimentación documentada."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC"], "ent": "Formato de observación de turno completo, con retroalimentación firmada", "elab": "Líder de Proyectos / Ingeniero QAQC", "fmt": "Formato de observación de turno (PROPUESTO)", "crit": "Opera el turno completo cumpliendo registros y seguridad, con retroalimentación documentada", "kit": 17}, {"id": "a22", "n": 22, "sem": 5, "dia": 2, "tit": "Operación con énfasis en calidad", "act": "Operación integral con énfasis en calidad: muestreo, ajuste de dosis, control de separación de fases y uso racional de insumos.", "lect": ["Todos los instructivos y formatos aplicables revisados en semanas previas."], "rec": ["Equipo de polímero, laboratorio básico, formatos de control."], "rev": ["Caso práctico en operación y revisión de decisiones tomadas."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC"], "ent": "Caso práctico de calidad resuelto: muestreo y ajuste de dosis justificados", "elab": "Colaborador", "fmt": "Formato de caso práctico (PROPUESTO)", "crit": "Decisiones de muestreo y dosis justificadas con datos", "kit": 17}, {"id": "a23", "n": 23, "sem": 5, "dia": 3, "tit": "Operación semi autónoma", "act": "Operación semi autónoma del cargo con seguimiento del jefe inmediato y cierre de dudas técnicas.", "lect": ["Perfil de cargo; bitácora; instructivos aplicables."], "rec": ["Sistema completo, formatos operativos, radios/comunicación."], "rev": ["Lista de verificación de autonomía y retroalimentación 1:1."], "resp": ["Líder de Proyectos"], "ent": "Lista de verificación de autonomía y acta de retroalimentación 1:1", "elab": "Líder de Proyectos", "fmt": "Lista de verificación de autonomía (PROPUESTO)", "crit": "Cumple los ítems de autonomía con seguimiento mínimo del jefe inmediato", "kit": 18}, {"id": "a24", "n": 24, "sem": 5, "dia": 4, "tit": "Evaluación final teórico-práctica", "act": "Evaluación final teórico-práctica del cargo: seguridad, operación, calidad, mantenimiento básico y disciplina de registro.", "lect": ["Compendio de formatos e instructivos del cargo."], "rec": ["Cuestionario, checklist práctico, bitácora y formatos del proceso."], "rev": ["Evaluación final y plan de cierre de brechas."], "resp": ["Líder de Proyectos", "Ingeniero de control de Calidad QAQC"], "ent": "Examen final teórico-práctico resuelto (cuestionario y checklist práctico)", "elab": "Colaborador", "fmt": "Examen final del cargo (PROPUESTO)", "crit": "Nota mínima de 3 sobre 5 (equivalente a «Bueno» en la hoja 9) en seguridad, operación, calidad y registros", "kit": 19}, {"id": "a25", "n": 25, "sem": 5, "dia": 5, "tit": "Retroalimentación y cierre del plan", "act": "Retroalimentación final, definición de brechas remanentes, plan de mejora y habilitación para operación según resultado.", "lect": ["Resultado de evaluaciones y observaciones de campo."], "rec": ["Formato de retroalimentación, plan de mejora, registros de evaluación."], "rev": ["Acta de cierre del plan de abordaje firmada por responsable y colaborador."], "resp": ["Líder de Proyectos", "Talento Humano"], "ent": "Acta de cierre del plan de abordaje, firmada por responsable y colaborador", "elab": "Líder de Proyectos / Talento Humano", "fmt": "Acta de cierre (PROPUESTO)", "crit": "Acta firmada por responsable y colaborador; brechas remanentes con plan y fecha", "kit": 20}], "kits": {"1": "Acta de inducción y evaluación escrita", "2": "Registro de asistencia y evaluación HSEQ", "3": "Guía de recorrido y validación oral", "4": "Checklist de identificación de equipos", "5": "Práctica de jarras y retorta", "6": "Checklist de pasos críticos de polímero", "7": "Ejercicio de cálculo de dosis y consumo", "8": "Control de dosificación, inventario y horómetro", "9": "Práctica supervisada de válvulas y manifolds", "10": "Reporte de llenado y estimación volumétrica", "11": "Lista de observación directa", "12": "Bitácora de clarificado y evaluación de la bomba", "13": "Acta de terreno y checklist de montaje", "14": "Morfología de la línea de lodos", "15": "Prueba hidrostática y de funcionamiento", "16": "Checklist de mantenimiento básico", "17": "Observación de turno y caso de calidad", "18": "Lista de verificación de autonomía", "19": "Examen final teórico-práctico", "20": "Acta de cierre y retroalimentación", "21": "Registro fotográfico"}, "themes": {"1": "Inducción y reconocimiento", "2": "Polímero y dosificación", "3": "Operación del Geotube®", "4": "Montaje y pruebas", "5": "Operación integral y evaluación"}, "fest": ["2026-11-02", "2026-11-16", "2026-12-08", "2026-12-25", "2027-01-01", "2027-01-11"]};
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const MES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const DIAS = ["dom","lun","mar","mié","jue","vie","sáb"];
+const S = {role:0, cfg:{nombre:"",inicio:"2026-11-19",jefe:"Líder de Proyectos",resp:""}, acts:{}, brechas:[], quiz:{}, qd:{}, qrc:null, who:(function(){try{return localStorage.getItem("pag-who")||"";}catch(e){return "";}})(), tab:(function(){try{return localStorage.getItem("pag-tab")||"resumen";}catch(e){return "resumen";}})(), filter:"todas", forms:{}, form:false, open:null, mode:"cargando", dates:[], cierre:null};
+let DB=null, ASSETS=null;
+const ROLES=["Técnico Integral de Geotube®","Líder de Proyectos","Ingeniero QAQC","Talento Humano","Líder HSEQ","Líder Cadena de Abastecimiento"];
+const ROLE_SHORT=["Técnico","L. Proyectos","QAQC","T. Humano","HSEQ","Abastecimiento"];
+function normRole(x){ const s=String(x).toLowerCase(); if(s.includes("técnico")||s.includes("tecnico")||s.includes("colaborador")) return ROLES[0]; if(s.includes("proyectos")) return ROLES[1]; if(s.includes("qaqc")||s.includes("calidad")) return ROLES[2]; if(s.includes("talento")) return ROLES[3]; if(s.includes("hseq")) return ROLES[4]; if(s.includes("abastecimiento")) return ROLES[5]; return x; }
+function rolesOf(a){ const set=new Set([ROLES[0]]); a.resp.forEach(r=>set.add(normRole(r))); return ROLES.filter(r=>set.has(r)); }
+function elabRoles(a){ return String(a.elab).split("/").map(x=>normRole(x.trim())); }
+function tarea(a,role){
+  const hace=elabRoles(a).includes(role);
+  if(role===ROLES[0]) return hace?"Ejecuta la actividad y entrega: "+a.ent:"Ejecuta la actividad. El formato lo diligencia "+a.elab+".";
+  return hace?"Diligencia y firma: "+a.ent:"Revisa y firma: "+a.ent;
+}
+
+/* ---------- evaluaciones de opción múltiple (sesión del técnico) ---------- */
+const QZ={
+1:[['¿A quién reporta el cargo de Técnico Integral de Geotube®?','Al Líder de Proyectos','A la Gerencia de Operaciones','Al Líder HSEQ','A Talento Humano'],
+['¿Cuál es el código del perfil de cargo?','GTH-FR-042','GPY-FR-025','GPY-IN-019','GPY-FR-019'],
+['¿Cuánto dura el plan de abordaje?','5 semanas, una actividad por día hábil','2 semanas, dos actividades por día','3 meses, una actividad por semana','10 días seguidos, incluidos festivos'],
+['¿Qué se entrega al terminar cada actividad?','El formato diligenciado y firmado','Solo un mensaje al jefe inmediato','Una foto del sitio de trabajo','No se entrega nada'],
+['¿Qué pasa si una actividad queda «No aprobada»?','Se registra una brecha con un plan de mejora','Se repite sin dejar registro','Se termina el plan de abordaje','Se pasa a la siguiente sin cambios']],
+2:[['¿Qué se debe hacer al ver un acto o una condición insegura?','Reportarlo según los lineamientos HSEQ','Ignorarlo si no lo afecta a uno','Comentarlo solo al final del mes','Corregirlo sin avisar a nadie'],
+['¿Qué significa SG-SST?','Sistema de Gestión de Seguridad y Salud en el Trabajo','Sistema General de Servicios Técnicos','Seguro General de Salud del Trabajador','Sistema de Gestión de Sostenibilidad Técnica'],
+['¿Qué es el PESV?','Plan Estratégico de Seguridad Vial','Programa de Equipos de Seguridad Visual','Plan de Emergencias y Salvamento','Procedimiento de Entrega de Servicios'],
+['¿Cuándo se usan los EPP?','Durante toda la actividad en campo, según el riesgo de la tarea','Solo cuando el supervisor está presente','Solo en trabajos en altura','Solo si el clima lo permite'],
+['¿Qué se necesita antes de ejecutar un trabajo de riesgo en la refinería?','El permiso de trabajo autorizado','Solo la orden verbal del compañero','Ningún documento','La firma del técnico únicamente']],
+3:[['¿Qué hace el Geotube® en el proceso?','Retiene los sólidos del lodo floculado y deja salir el agua','Calienta el lodo para secarlo','Mezcla el polímero con el agua','Almacena el agua clarificada para reuso'],
+['¿Cuál es el orden del flujo del proceso?','Bombeo del lodo, dosificación de polímero, manifolds, llenado del Geotube®, clarificado','Llenado del Geotube®, bombeo, polímero, manifolds','Clarificado, polímero, bombeo, Geotube®','Polímero, clarificado, Geotube®, bombeo'],
+['¿Dónde se registran las novedades de la operación?','En la bitácora de operación','En un mensaje de WhatsApp','En el perfil de cargo','No se registran'],
+['¿Cómo se valida la actividad de este día?','Con un recorrido guiado y validación oral del flujo','Con un examen de 50 preguntas','Con la firma de Talento Humano','No se valida']],
+4:[['¿Qué formato se usa para revisar los equipos antes de operar?','El checklist preoperacional','La bitácora de operación','El perfil de cargo','El acta de cierre'],
+['¿Cuál de estos NO hace parte de los equipos del sistema?','Una grúa torre','El sistema de bombeo','El equipo de polímero','Los manifolds y válvulas'],
+['¿Para qué sirven los manifolds?','Para distribuir el flujo de lodo hacia las unidades Geotube®','Para preparar el polímero','Para medir el horómetro','Para limpiar el Geotube®'],
+['¿Qué criterio se exige en la identificación de equipos?','Identificar el 100 % de los equipos listados','Identificar al menos la mitad','Identificar solo las bombas','No hay criterio']],
+5:[['¿Para qué sirve la prueba de jarras?','Para seleccionar el polímero y la dosis que mejor flocula el lodo','Para medir la altura del Geotube®','Para revisar el compresor','Para calcular el horómetro'],
+['¿Qué instructivo describe la prueba de jarras?','GPY-IN-022','GPY-IN-019','GTH-FR-042','GPY-FR-024'],
+['¿Qué formato es la calculadora de prueba de jarras?','GPY-FR-022','GPY-FR-019','GPY-FR-025','GPY-FR-021'],
+['¿Qué mide la retorta?','El contenido de sólidos, agua y aceite de la muestra','La presión de la línea','El caudal de la bomba','La temperatura del polímero']],
+6:[['¿Qué instructivo rige la dosificación de polímero?','GPY-IN-019','GPY-IN-022','GPY-FR-024','GTH-FR-042'],
+['¿Con qué se calcula la cantidad de polímero a preparar?','Con la calculadora GPY-FR-021','A ojo, según la experiencia','Con el formato GPY-FR-019','Con la bitácora de operación'],
+['¿Qué se verifica antes de arrancar la preparación?','Agua de preparación, compresor y tolva','Solo el nivel del Geotube®','Solo el combustible','Nada, se arranca de una vez'],
+['¿Qué porcentaje de los pasos críticos se debe cumplir?','El 100 %','El 80 %','El 50 %','Los que alcance']],
+7:[['¿Qué datos alimentan el cálculo de dosis?','Los resultados de la prueba de jarras y las condiciones del proceso','Solo el clima del día','El número de trabajadores','El inventario de combustible'],
+['¿Qué calculadora se usa para la dosis del equipo de polímero?','GPY-FR-021','GPY-FR-025','GPY-FR-019','GPY-FR-024'],
+['¿Quién valida el cálculo de dosis y consumo?','El jefe inmediato','Talento Humano','El proveedor del polímero','Nadie lo valida'],
+['Si tu cálculo difiere del valor validado más de la tolerancia, ¿qué haces?','Revisarlo y corregirlo con el jefe antes de aplicarlo','Aplicarlo de todas formas','Duplicar la dosis','Dejar de dosificar sin avisar']],
+8:[['¿En qué formato se registra el control de dosificación de polímero?','GPY-FR-025','GPY-FR-019','GPY-FR-024','GTH-FR-042'],
+['¿Qué se lee para reportar las horas del equipo?','El horómetro','El manómetro','La cinta métrica','El termómetro'],
+['¿Con qué se concilia el registro de consumo?','Con el inventario físico','Con la nómina','Con el perfil de cargo','Con el acta de cierre'],
+['¿A quién se dirige la solicitud de abastecimiento?','Al Líder de Cadena de Abastecimiento','Al Líder HSEQ','A Talento Humano','Al cliente']],
+9:[['¿Qué se observa en el muestreo en línea para ajustar la dosis?','La separación de fases entre sólidos y agua','El color del Geotube®','El nivel de combustible','La hora del turno'],
+['Si la muestra muestra una separación de fases deficiente, ¿qué haces?','Propongo un ajuste de dosis, lo registro y lo valido con el responsable','No hago nada','Apago todo el sistema sin avisar','Cambio de polímero por mi cuenta'],
+['¿Cuál es el objetivo del ajuste de dosis?','Mantener buena separación con un uso racional del químico','Gastar todo el polímero disponible','Llenar más rápido sin importar la calidad','Reducir el horómetro'],
+['¿Dónde se registran los muestreos y ajustes?','En GPY-FR-025','En GPY-FR-019','En el perfil de cargo','No se registran']],
+10:[['¿Qué componentes del equipo de polímero se verifican?','Compresor, bomba de agua y elementos de medición y control','Solo la pintura del equipo','Solo las mangueras del Geotube®','El vehículo de transporte'],
+['¿Con qué formato se hace la verificación?','Con el checklist preoperacional','Con GPY-FR-024','Con el acta de terreno','Con la bitácora de clarificado'],
+['¿Cuándo se aprueba la verificación?','Cuando no hay hallazgos críticos','Cuando hay máximo tres hallazgos críticos','Siempre se aprueba','Cuando lo dice el técnico'],
+['Si encuentras un hallazgo crítico, ¿qué haces?','No opero el equipo y lo reporto de inmediato','Opero y lo reporto al final del mes','Lo reparo sin avisar','Lo ignoro']],
+11:[['¿Para qué se operan válvulas y manifolds?','Para controlar el flujo hacia los Geotube® y lograr una distribución homogénea del lodo','Para preparar polímero','Para medir el horómetro','Para limpiar el terreno'],
+['¿Cómo se coordinan las maniobras con el equipo?','Por radio de comunicación','A gritos desde lejos','Por correo electrónico','No se coordinan'],
+['¿Quién diligencia el formato de esta práctica?','El Líder de Proyectos','El técnico solo','Talento Humano','El proveedor'],
+['¿Cuál es el criterio de aprobación?','Maniobras correctas y distribución homogénea, sin correcciones de seguridad','Terminar rápido','Abrir todas las válvulas a la vez','No hay criterio']],
+12:[['¿Qué se mide para controlar el llenado del Geotube®?','Largo, ancho y altura','Solo el peso','Solo la temperatura','El color de la tela'],
+['¿Para qué se toman esas medidas?','Para estimar el volumen y el avance del llenado','Para calcular la nómina','Para revisar el compresor','Para pedir combustible'],
+['¿Con qué herramienta se mide?','Con cinta métrica','Con el horómetro','Con la retorta','Con el manómetro'],
+['¿Contra qué se compara la altura medida?','Contra la altura y el volumen de referencia establecidos','Contra la del día anterior solamente','Contra nada','Contra la altura del técnico']],
+13:[['¿Qué se debe prevenir al llenar el Geotube®?','Deformaciones y sobrellenado','Que se moje','Que cambie de color','Que se seque'],
+['¿Dónde se acomodan las mangueras?','En los puertos de entrega del Geotube®','Sobre la vía de acceso','Dentro del tanque de polímero','Donde haya espacio'],
+['¿Qué elementos de izaje o apoyo se pueden usar?','Solo los autorizados','Cualquiera que esté a la mano','Ninguno nunca','Los que traiga el técnico de su casa'],
+['¿Qué se verifica además de las mangueras?','El posicionamiento del Geotube® y el uso de EPP','El inventario de polímero','El horómetro','La nómina']],
+14:[['¿Qué se monitorea en el clarificado?','Los cambios de color o textura del fluido','La marca de la bomba','El peso del Geotube®','La hora de llegada'],
+['Si el clarificado cambia de color, ¿qué haces?','Lo registro en la bitácora y aviso de inmediato','Sigo sin decir nada','Apago todo sin avisar','Lo anoto al final de la semana'],
+['¿Con qué se limpia el Geotube®?','Con la hidrolavadora o el elemento suministrado','Con químicos no autorizados','Con la mano sin EPP','No se limpia'],
+['¿Dónde quedan registradas las novedades del día?','En la bitácora de operación','En el perfil de cargo','En la solicitud de abastecimiento','En ningún lado']],
+15:[['¿Para qué sirve la bomba de clarificado?','Para mantener la continuidad del proceso evacuando el clarificado','Para preparar polímero','Para llenar el Geotube®','Para lavar las mangueras'],
+['¿Qué se usa antes de arrancar la bomba?','El checklist de operación','El acta de terreno','La calculadora GPY-FR-021','Nada'],
+['Ante una falla de la bomba, ¿qué haces?','La reporto oportunamente','Espero al final del turno','La desarmo sin autorización','No hago nada'],
+['¿Cuál es el criterio de aprobación?','Arrancar, monitorear y reportar fallas sin apoyo','Que la bomba no se use','Que otro la opere','No hay criterio']],
+16:[['¿Qué se verifica en el terreno antes del montaje?','Medidas, nivelación, accesos y riesgos del área','Solo el color del suelo','El inventario de polímero','La nómina del personal'],
+['¿En qué documento queda la verificación?','En el acta de verificación de terreno','En GPY-FR-025','En el perfil de cargo','En la bitácora de clarificado'],
+['¿Quién fija los criterios mínimos de instalación?','El Líder de Proyectos','El técnico por su cuenta','Talento Humano','El proveedor de mangueras'],
+['¿Qué se necesita para recorrer el terreno?','Herramientas de medición y EPP','Solo el celular','Nada','La calculadora de jarras']],
+17:[['¿Con base en qué se cortan los materiales?','Con las medidas tomadas en el terreno','A ojo','Con las medidas de otro proyecto','Sin medir'],
+['¿Qué se verifica antes de montar?','Los insumos del proyecto','El clima de la semana siguiente','El horómetro','Nada'],
+['¿Qué formato se diligencia?','El checklist de montaje','GPY-FR-022','El acta de cierre','El perfil de cargo'],
+['¿Cuándo se aprueba el montaje?','Cuando queda conforme y sin hallazgos críticos','Cuando se termina rápido','Siempre','Cuando lo dice el técnico']],
+18:[['¿Qué formato registra la morfología de la línea de lodos?','GPY-FR-024','GPY-FR-019','GPY-FR-025','GPY-FR-021'],
+['¿Qué se revisa además del trazado?','Los accesorios y soportes','El color de la manguera','La nómina','El polímero'],
+['¿Cómo se aprueba el trazado instalado?','En una revisión técnica en campo','Por teléfono','No se aprueba','Con una foto sin revisión'],
+['¿Por qué importa la morfología de la línea?','Para una operación segura y estable','Por estética','No importa','Para ahorrar EPP']],
+19:[['¿Para qué sirve la prueba hidrostática?','Para verificar la línea antes del arranque operativo','Para medir el llenado del Geotube®','Para calcular la dosis','Para limpiar el clarificado'],
+['¿Con qué formato se registra la prueba hidrostática?','GPY-FR-019','GPY-FR-024','GPY-FR-022','GPY-FR-025'],
+['¿Con qué se hace la prueba?','Con agua de prueba en la línea instalada','Con polímero','Con aire sin control','Con lodo'],
+['¿Cuándo se hace la prueba de funcionamiento?','Antes del arranque operativo','Después de terminar el proyecto','Nunca','Solo si hay fallas']],
+20:[['Ante una bomba atascada, ¿qué haces?','La desatasco según el procedimiento, con el equipo apagado, y aviso la falla','La golpeo hasta que arranque','La dejo así sin avisar','La desatasco con el equipo encendido'],
+['¿Qué se mide en esta práctica?','El tiempo de respuesta','El peso de la bomba','La altura del Geotube®','El inventario'],
+['¿Quién fija el tiempo máximo de respuesta?','El Líder de Proyectos','El técnico','Talento Humano','El proveedor'],
+['Si ves una falla visible en un equipo, ¿qué haces?','La aviso oportunamente','La anoto al final del mes','No digo nada','La reparo sin autorización']],
+21:[['¿En qué escala se califica cada área en la observación de turno?','De 1 a 5','De 1 a 100','De A a F','Sí o no']],
+22:[['¿Cómo se justifican las decisiones de muestreo y dosis?','Con datos','Con la intuición','Con lo que diga un compañero','No se justifican'],
+['¿Qué se controla con énfasis en este día?','La separación de fases','El color del Geotube®','La nómina','El combustible'],
+['¿Cuál es el objetivo frente a los insumos?','Uso racional','Usar el doble para asegurar','No usar insumos','Pedir más de lo necesario'],
+['¿Quién revisa las decisiones del caso práctico?','El Líder de Proyectos y el Ingeniero QAQC','Nadie','Solo el técnico','El cliente']],
+23:[['¿Qué significa operación semi autónoma?','Operar con seguimiento mínimo del jefe inmediato','Operar sin ningún registro','Operar solo de noche','No operar'],
+['¿Qué niveles tiene la lista de autonomía?','Lo hace solo, Con apoyo, Aún no','Bueno, Malo','De 1 a 100','Sí, No'],
+['¿Dónde se cierran las dudas técnicas?','En una reunión 1:1 con el jefe inmediato','En un grupo de WhatsApp','No se cierran','En el acta de terreno'],
+['¿Qué debes reportar siempre durante la operación?','Las fallas y las condiciones inseguras','Solo lo que salga bien','Nada','Solo al final del plan']],
+24:[['¿Qué exige la tarea de preparar polímero en seguridad?','Los permisos y EPP de la inducción HSEQ y lo indicado en GPY-IN-019','Solo guantes','Nada especial','Solo casco'],
+['¿Qué componentes del equipo de polímero se verifican antes de operar?','Compresor, bomba de agua y elementos de medición y control','Solo el tanque','Solo la tolva','Ninguno'],
+['¿Qué se mide para controlar el llenado del Geotube®?','Largo, ancho y altura, y el volumen estimado','Solo el peso','Solo la temperatura','El color'],
+['¿Con qué formato se registra la prueba hidrostática?','GPY-FR-019','GPY-FR-025','GPY-FR-021','GTH-FR-042'],
+['¿Qué formato lleva el control de consumo de polímero?','GPY-FR-025','GPY-FR-019','GPY-FR-024','GPY-FR-022']],
+25:[['¿Qué define el acta de cierre del plan?','La habilitación para operar','El salario del técnico','El horario del turno','El inventario'],
+['¿Cuáles son las opciones de habilitación?','Sí, Sí con seguimiento, No aún','Aprobado o despedido','Bueno o malo','No hay opciones'],
+['¿Quién firma el acta de cierre?','El responsable del proceso y el colaborador','Solo el técnico','Nadie','El proveedor'],
+['¿Qué se hace con las brechas remanentes?','Se dejan con plan de mejora, responsable y fecha','Se borran','Se ignoran','Se pasan al siguiente técnico']]};
+QZ[21]=QZ[21].concat([['¿Qué puntaje equivale a «Bueno»?','3','1','5','2'],['¿Qué áreas incluye la observación del turno?','Polímero, bombeo, Geotube®, clarificado, registros, equipo y seguridad','Solo el bombeo','Solo la seguridad','Solo los registros'],['¿Quiénes observan el turno completo?','El Líder de Proyectos y el Ingeniero QAQC','Talento Humano','El cliente','Nadie']]);
+const QMIN=n=>(n===1||n===2)?0.8:0.75;
+function qOpts(n,i){ const o=QZ[n][i].slice(1), r=(n*7+i*3)%o.length; return o.slice(r).concat(o.slice(0,r)); }
+function qCorrect(n,i){ return qOpts(n,i).indexOf(QZ[n][i][1]); }
+function qRec(id){ const r=S.quiz[id]; return r&&!r.void?r:null; }
+function qScore(a,ans){ let k=0; QZ[a.n].forEach((_,i)=>{ if(ans[i]===qCorrect(a.n,i)) k++; }); return k; }
+function qOpen(a){ return S.dates[a.n-1]<=todayD(); }
+function qEst(a){ const r=qRec(a.id); if(r) return r.score/r.total>=QMIN(a.n)?'aprobada':'reprobada'; return qOpen(a)?'disponible':'bloqueada'; }
+const QLB={aprobada:'Aprobada',reprobada:'Bajo el mínimo',disponible:'Por responder',bloqueada:'Bloqueada'};
+const QCL={aprobada:'cumplida',reprobada:'brecha',disponible:'curso',bloqueada:'pend'};
+function qChip(a){ const e=qEst(a); return `<span class='chip ${QCL[e]}'>${QLB[e]}</span>`; }
+function qStats(){ let resp=0,ok=0,sum=0; D.acts.forEach(a=>{ const r=qRec(a.id); if(r){ resp++; sum+=r.score/r.total; if(r.score/r.total>=QMIN(a.n)) ok++; } }); return {resp,ok,prom:resp?sum/resp:null}; }
+const TABS_T=[['hoy','Hoy'],['mi','Mi plan'],['notas','Mis notas']];
+function tabsFor(){
+  if(!ICON.hoy){ ICON.hoy=ICON.resumen; ICON.mi=ICON.plan; ICON.notas=`<svg viewBox='0 0 24 24'><path d='M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z'/></svg>`; }
+  const T=S.who==='tec'?TABS_T:S.who?TABS:[];
+  if(T.length&&!T.some(t=>t[0]===S.tab)) S.tab=T[0][0];
+  return T;
+}
+function viewWho(){
+  return `<section class=hero><div class=lbl>Plan de abordaje · Técnico Integral de Geotube®</div><div class=th-t>¿Cómo vas a entrar?</div><p class=th-p style='opacity:.9'>Elige tu sesión. Puedes cambiarla después desde el botón de arriba.</p></section>
+  <div class=who2><button class=whob data-act=who data-k=tec><b>Soy el técnico</b><span>Respondo la evaluación de opción múltiple de cada actividad y veo mis notas.</span></button>
+  <button class=whob data-act=who data-k=eva><b>Soy evaluador</b><span>Hago seguimiento: veo los resultados del técnico, califico, firmo y registro brechas.</span></button></div>`;
+}
+function tecCard(a){ const e=qEst(a), r=qRec(a.id);
+  return `<div class='card today-card'><div class=k>Semana ${a.sem} · día ${a.dia} · ${fmtL(S.dates[a.n-1])}</div><div class=t>${esc(a.tit)}</div><div>${qChip(a)}${r?` <b style='margin-left:6px'>${r.score}/${r.total}</b>`:''}</div><button class=btn data-act=open data-id=${a.id}>${e==='disponible'?'Responder evaluación':e==='bloqueada'?'Ver actividad':'Ver mis respuestas'}</button></div>`; }
+function tecRow(a){ const r=qRec(a.id), d=S.dates[a.n-1];
+  return `<button class=row data-act=open data-id=${a.id}><span class=d>${fmt(d)}</span><span class=m><b>${esc(a.tit)}</b><small>S${a.sem} · día ${a.dia} · ${QZ[a.n].length} preguntas</small></span>${r?`<span class=sc>${r.score}/${r.total}</span>`:''}${qChip(a)}</button>`; }
+function viewHoy(){
+  const t=todayD(), q=qStats(), pct=Math.round(q.resp/25*100);
+  let h=`<section class=hero><div class=lbl>${esc(S.cfg.nombre?'Hola, '+S.cfg.nombre.split(' ')[0]:'Mi avance')}</div><div class=big><b>${q.resp}</b><span>de 25 evaluaciones respondidas</span></div><div class=bar><i style='width:${pct}%'></i></div><div class=sub><span>${q.ok} aprobadas</span><span>Promedio ${q.prom==null?'–':Math.round(q.prom*100)+' %'}</span></div></section>`;
+  const idx=S.dates.findIndex(d=>same(d,t));
+  if(idx>=0) h+=`<h2>Actividad de hoy</h2>`+tecCard(D.acts[idx]);
+  else { const nx=S.dates.findIndex(d=>d>t); if(nx>=0) h+=`<h2>Próxima actividad · ${fmtL(S.dates[nx])}</h2>`+tecCard(D.acts[nx]); else h+=`<h2>Plan terminado</h2><div class=empty>Ya pasaron las 25 actividades.</div>`; }
+  const otras=D.acts.filter(a=>qEst(a)==='disponible'&&a.n-1!==idx);
+  if(otras.length) h+=`<h2>Pendientes por responder (${otras.length})</h2><div class=list>`+otras.map(tecRow).join('')+`</div>`;
+  return h;
+}
+function viewMi(){ let h=''; for(let w=1;w<=5;w++){ const as=D.acts.filter(a=>a.sem===w), ok=as.filter(a=>qRec(a.id)).length; h+=`<details class=wk open><summary><span>Semana ${w}</span><span class=th>${esc(D.themes[w])}</span><span class=ct>${ok}/5</span></summary><div class=list>${as.map(tecRow).join('')}</div></details>`; } return h; }
+function viewNotas(){ const q=qStats(), rs=D.acts.filter(a=>qRec(a.id));
+  let h=`<div class=kpis style='margin-top:4px'><div class=kpi><b>${q.resp}/25</b><span>Respondidas</span></div><div class=kpi><b>${q.ok}</b><span>Aprobadas</span></div><div class=kpi><b>${q.prom==null?'–':Math.round(q.prom*100)+' %'}</b><span>Promedio</span></div><div class=kpi><b>${q.resp-q.ok}</b><span>Por reforzar</span></div></div><h2>Detalle</h2>`;
+  h+=rs.length?`<div class=list>${rs.map(tecRow).join('')}</div>`:`<div class=empty>Aún no has respondido evaluaciones.</div>`;
+  return h+`<button class='btn ghost' style='width:100%;margin-top:18px' onclick='window.salir&&window.salir()'>Cerrar sesión de este dispositivo</button><p class=note>Mínimo para aprobar: 80 % en las evaluaciones de los días 1 y 2, y 75 % en las demás.</p>`; }
+function qBlock(a,r){ return QZ[a.n].map((q,i)=>{ const os=qOpts(a.n,i), c=qCorrect(a.n,i), m=r.ans[i]; return `<div class=qq><p class=qt>${i+1}. ${esc(q[0])}</p><div class=qo>${os.map((o,j)=>`<div class='qop ${j===c?'ok':j===m?'bad':''}'><span class=qk>${'ABCD'[j]}</span><span>${esc(o)}</span>${j===m?`<small>${j===c?'Tu respuesta ✓':'Tu respuesta'}</small>`:j===c?'<small>Correcta</small>':''}</div>`).join('')}</div></div>`; }).join(''); }
+function renderTecSheet(sh){
+  const a=D.acts.find(x=>x.id===S.open), r=qRec(a.id), e=qEst(a), d=S.dates[a.n-1], sc=sh.scrollTop, qs=QZ[a.n], dr=S.qd[a.id]||[];
+  let body='';
+  if(e==='bloqueada') body=`<div class=empty>Esta evaluación se habilita el ${fmtL(d)}.</div>`;
+  else if(r){ const pct=Math.round(r.score/r.total*100); body=`<div class=derived><span>Tu resultado</span><b>${r.score} de ${r.total} · ${pct} %</b></div><p class=note>${r.score/r.total>=QMIN(a.n)?'Aprobaste esta evaluación.':'No alcanzaste el mínimo ('+Math.round(QMIN(a.n)*100)+' %). Tu evaluador revisará contigo los temas.'}</p>`+qBlock(a,r); }
+  else { const all=qs.every((_,i)=>dr[i]!=null);
+    body=qs.map((q,i)=>{ const os=qOpts(a.n,i); return `<div class=qq><p class=qt>${i+1}. ${esc(q[0])}</p><div class=qo>${os.map((o,j)=>`<button class=qop data-act=qa data-i=${i} data-j=${j} aria-pressed=${dr[i]===j}><span class=qk>${'ABCD'[j]}</span><span>${esc(o)}</span></button>`).join('')}</div></div>`; }).join('')+`<button class=btn style='width:100%;margin-top:18px' data-act=qsend ${all?'':'disabled'}>Enviar respuestas</button><p class=note>${all?'Revisa antes de enviar: después no se puede cambiar.':'Responde las '+qs.length+' preguntas para poder enviar.'}</p>`; }
+  sh.hidden=false;
+  sh.innerHTML=`<div class='in sh'><div class=sh-top><button class=iconbtn data-act=close aria-label=Cerrar><svg viewBox='0 0 24 24'><path d='M6 6l12 12M18 6L6 18'/></svg></button><div class=ttl>Semana ${a.sem} · día ${a.dia} · ${fmtL(d)}<b>Actividad ${a.n} de 25</b></div><button class=iconbtn data-act=nav data-d=-1 aria-label='Actividad anterior' ${a.n===1?'disabled':''}><svg viewBox='0 0 24 24'><path d='M15 5l-7 7 7 7'/></svg></button><button class=iconbtn data-act=nav data-d=1 aria-label='Actividad siguiente' ${a.n===25?'disabled':''}><svg viewBox='0 0 24 24'><path d='M9 5l7 7-7 7'/></svg></button></div>
+  <h3>${esc(a.tit)}</h3><p class=lead>${esc(a.act)}</p><dl class=kv><div><dt>Qué debes entregar</dt><dd><b>${esc(a.ent)}</b></dd></div><div><dt>Lecturas</dt><dd><ul>${a.lect.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></dd></div></dl>
+  <h2>Evaluación · ${qs.length} preguntas</h2>${body}
+  <div style='display:flex;gap:8px;margin-top:16px'><button class='btn ghost' style='flex:1' data-act=close>Cerrar</button>${a.n<25?`<button class=btn style='flex:1' data-act=nav data-d=1>Siguiente</button>`:''}</div></div>`;
+  sh.scrollTop=sc;
+}
+function evalQuizHtml(a){ const r=qRec(a.id), qs=QZ[a.n];
+  if(!r) return `<h2>Evaluación del técnico</h2><div class=empty>${qOpen(a)?'El técnico aún no ha respondido las '+qs.length+' preguntas.':'Se habilita para el técnico el '+fmtL(S.dates[a.n-1])+'.'}</div>`;
+  const pct=Math.round(r.score/r.total*100), okk=r.score/r.total>=QMIN(a.n);
+  return `<h2>Evaluación del técnico</h2><div class=derived><span>${okk?'Aprueba':'Bajo el mínimo ('+Math.round(QMIN(a.n)*100)+' %)'}</span><b>${r.score} de ${r.total} · ${pct} %</b></div><details class=wk><summary><span>Ver sus respuestas</span></summary>${qBlock(a,r)}</details><button class='btn ghost small' style='margin-top:8px' data-act=qreset>${S.qrc===a.id?'Toca otra vez para confirmar':'Habilitar un nuevo intento'}</button>`; }
+async function saveQuiz(id,doc){ S.quiz[id]=doc; renderAll(); if(DB){ try{ await DB.doc('quiz/'+id).set(doc); toast('Respuestas enviadas'); }catch(e){ toast('No se pudo enviar. Revisa la conexión.'); } } else { lsSave(); toast('Respuestas enviadas'); } }
+async function resetQuiz(id){ const doc={void:true,ts:Date.now()}; S.quiz[id]=doc; renderAll(); if(DB){ try{ await DB.doc('quiz/'+id).set(doc); toast('Nuevo intento habilitado'); }catch(e){ toast('No se pudo habilitar el nuevo intento.'); } } else { lsSave(); toast('Nuevo intento habilitado'); } }
+document.addEventListener('click',async ev=>{
+  const b=ev.target.closest('[data-act]'); if(!b) return; const act=b.dataset.act;
+  if(act==='who'){ S.who=b.dataset.k; try{ localStorage.setItem('pag-who',S.who); }catch(e){} S.tab=S.who==='tec'?'hoy':'resumen'; renderAll(); window.scrollTo(0,0); }
+  else if(act==='logout'){ S.who=''; try{ localStorage.removeItem('pag-who'); }catch(e){} if(S.open) closeSheet(); renderAll(); window.scrollTo(0,0); }
+  else if(act==='qa'){ const id=S.open, d=(S.qd[id]||[]).slice(); d[Number(b.dataset.i)]=Number(b.dataset.j); S.qd[id]=d; renderSheet(); }
+  else if(act==='qsend'){ const a=D.acts.find(x=>x.id===S.open), ans=(S.qd[a.id]||[]).slice(); if(ans.length<QZ[a.n].length||ans.some(x=>x==null)) return; delete S.qd[a.id]; $('#sheet').scrollTop=0; await saveQuiz(a.id,{ans,score:qScore(a,ans),total:QZ[a.n].length,ts:Date.now()}); }
+  else if(act==='qreset'){ if(S.qrc===S.open){ S.qrc=null; resetQuiz(S.open); } else { S.qrc=S.open; renderSheet(); } }
+});
+
+/* ---------- fechas ---------- */
+const parse = s => { const [y,m,d]=String(s).split("-").map(Number); return new Date(y,m-1,d,12); };
+const iso = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const same = (a,b) => iso(a)===iso(b);
+const FEST = new Set(D.fest);
+const isWork = d => d.getDay()>0 && d.getDay()<6 && !FEST.has(iso(d));
+const nextWork = d => { const x=new Date(d); while(!isWork(x)) x.setDate(x.getDate()+1); return x; };
+const addWork = (d,n) => { const x=new Date(d); let k=0; while(k<n){ x.setDate(x.getDate()+1); if(isWork(x)) k++; } return x; };
+const fmt = d => d.getDate()+" "+MES[d.getMonth()];
+const fmtL = d => DIAS[d.getDay()]+" "+d.getDate()+" "+MES[d.getMonth()];
+function computeDates(){
+  const out=[]; let d=nextWork(parse(S.cfg.inicio||"2026-11-19"));
+  for(let i=0;i<25;i++){ out.push(new Date(d)); d=addWork(d,1); }
+  S.dates=out; S.cierre=addWork(out[24],7);
+}
+const todayD = () => { const t=new Date(); t.setHours(12,0,0,0); return t; };
+
+/* ---------- estado ---------- */
+function rec(id){ return S.acts[id]||{}; }
+function estado(id){
+  const r=rec(id);
+  if(r.res===1) return "brecha";
+  if(r.res>=2 && r.ent && r.fc && r.fr && r.fj) return "cumplida";
+  if(r.res||r.ent||r.fc||r.fr||r.fj||r.fecha||r.obs||(r.ev&&r.ev.length)) return "curso";
+  return "pend";
+}
+const EST = {pend:"Pendiente",curso:"En curso",cumplida:"Cumplida",brecha:"Con brecha"};
+const GLY = {pend:"",curso:"•",cumplida:"✓",brecha:"!"};
+function falta(id){
+  const r=rec(id), f=[];
+  if(r.res===1) return ["Registrar la brecha y el plan de mejora"];
+  if(!r.res) f.push("calificar el resultado");
+  if(!r.ent) f.push("recibir el entregable");
+  const fs=[!r.fc&&"colaborador",!r.fr&&"revisor",!r.fj&&"jefe inmediato"].filter(Boolean);
+  if(fs.length) f.push("firma de "+fs.join(", "));
+  return f;
+}
+function stats(){
+  const st={pend:0,curso:0,cumplida:0,brecha:0}; let ent=0,firm=0,sum=0,nres=0;
+  D.acts.forEach(a=>{ const r=rec(a.id); st[estado(a.id)]++; if(r.ent) ent++; if(r.fc&&r.fr&&r.fj) firm++; if(r.res){sum+=r.res;nres++;} });
+  const abiertas=S.brechas.filter(b=>b.estado!=="Cerrada").length;
+  return {st,ent,firm,prom:nres?sum/nres:null,abiertas};
+}
+
+/* ---------- persistencia ---------- */
+const LS="plan-abordaje-geotube-v1";
+function lsLoad(){ try{ const j=JSON.parse(localStorage.getItem(LS)||"null"); if(j){ S.cfg=Object.assign(S.cfg,j.cfg||{}); S.acts=j.acts||{}; S.brechas=j.brechas||[]; S.forms=j.forms||{}; S.quiz=j.quiz||{}; } }catch(e){} }
+function lsSave(){ try{ localStorage.setItem(LS,JSON.stringify({cfg:S.cfg,acts:S.acts,brechas:S.brechas,forms:S.forms,quiz:S.quiz})); }catch(e){} }
+const clean = o => { const r={}; Object.keys(o).forEach(k=>{ if(o[k]!==undefined) r[k]=o[k]; }); return r; };
+function toast(t){ const e=$("#toast"); e.textContent=t; e.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>e.hidden=true,2600); }
+async function saveAct(id,patch){
+  const cur=clean(Object.assign({},S.acts[id]||{},patch,{upd:Date.now()})); S.acts[id]=cur; renderAll();
+  if(DB){ try{ await DB.doc("acts/"+id).set(cur); }catch(e){ toast("No se pudo guardar. Revisa la conexión."); } } else lsSave();
+}
+async function saveCfg(patch){
+  S.cfg=Object.assign({},S.cfg,patch); computeDates(); renderAll();
+  if(DB){ try{ await DB.doc("cfg/plan").set(clean(S.cfg)); }catch(e){ toast("No se pudo guardar. Revisa la conexión."); } } else lsSave();
+}
+async function addBrecha(b){
+  if(DB){ try{ await DB.collection("brechas").add(clean(b)); toast("Brecha registrada"); }catch(e){ toast("No se pudo guardar la brecha."); } }
+  else { b.id="l"+Date.now(); S.brechas.unshift(b); lsSave(); renderAll(); toast("Brecha registrada"); }
+}
+async function saveBrecha(b,patch){
+  const n=clean(Object.assign({},b,patch)); delete n.id;
+  if(DB){ try{ await DB.doc("brechas/"+b.id).set(n); }catch(e){ toast("No se pudo guardar."); } }
+  else { Object.assign(b,patch); lsSave(); renderAll(); }
+}
+
+/* ---------- vistas ---------- */
+const ICON = {
+  th:'<svg viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',
+  resumen:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+  plan:'<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>',
+  brechas:'<svg viewBox="0 0 24 24"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18v.5"/></svg>',
+  equipo:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M17 14c2.5 0 4.5 2 4.5 4.5"/></svg>',
+  ajustes:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.4 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.7h4l.4-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/></svg>'
+};
+const TABS=[["resumen","Resumen"],["plan","Plan"],["brechas","Brechas"],["equipo","Equipo"],["th","T. Humano"],["ajustes","Ajustes"]];
+function renderTabs(){
+  const TT=tabsFor(); $("#tabs").hidden=!TT.length; $("#tabs").innerHTML=TT.map(([k,l])=>`<button data-act="tab" data-k="${k}" ${S.tab===k?'aria-current="page"':""}>${ICON[k]}<span>${l}</span></button>`).join("");
+}
+function chip(e){ return `<span class="chip ${e}">${GLY[e]?GLY[e]+" ":""}${EST[e]}</span>`; }
+
+function viewResumen(){
+  const s=stats(), tot=25, pct=Math.round(s.st.cumplida/tot*100), t=todayD();
+  let h=`<section class="hero"><div class="lbl">Avance del plan</div><div class="big"><b>${s.st.cumplida}</b><span>de ${tot} actividades cumplidas</span></div>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
+    <div class="sub"><span>${pct} %</span><span>${fmt(S.dates[0])} al ${fmt(S.dates[24])} · cierre de brechas ${fmt(S.cierre)}</span></div></section>`;
+  h+=`<div class="counts"><div class="cnt ok"><b>${s.st.cumplida}</b><span>Cumplidas</span></div><div class="cnt warn"><b>${s.st.curso}</b><span>En curso</span></div><div class="cnt bad"><b>${s.st.brecha}</b><span>Con brecha</span></div><div class="cnt"><b>${s.st.pend}</b><span>Pendientes</span></div></div>`;
+  // hoy
+  let idx=S.dates.findIndex(d=>same(d,t)), head="Hoy";
+  if(idx<0){ const nx=S.dates.findIndex(d=>d>t); if(nx<0){ idx=-1; } else { idx=nx; const dd=Math.round((S.dates[nx]-t)/864e5); head=dd>1?`Próxima actividad · en ${dd} días`:"Próxima actividad · mañana"; } }
+  if(idx>=0){ const a=D.acts[idx]; h+=`<h2>${head}</h2><div class="card today-card"><div class="k">Semana ${a.sem} · día ${a.dia} · ${fmtL(S.dates[idx])}</div><div class="t">${esc(a.tit)}</div><div>${chip(estado(a.id))}</div><button class="btn" data-act="open" data-id="${a.id}">Validar actividad</button></div>`; }
+  else h+=`<h2>Hoy</h2><div class="empty">El plan terminó. Revisa las brechas abiertas antes del ${fmt(S.cierre)}.</div>`;
+  // mapa
+  h+=`<h2>Mapa del plan</h2><div class="card"><div class="map">`;
+  for(let w=1;w<=5;w++){
+    const as=D.acts.filter(a=>a.sem===w), ok=as.filter(a=>estado(a.id)==="cumplida").length;
+    h+=`<div class="mrow"><div class="w">S${w}</div>`+as.map(a=>{ const e=estado(a.id), d=S.dates[a.n-1];
+      return `<button class="cell ${e}${same(d,t)?" today":""}" data-act="open" data-id="${a.id}" aria-label="Semana ${a.sem} día ${a.dia}, ${fmt(d)}: ${esc(a.tit)}. ${EST[e]}"><small>${MES[d.getMonth()]}</small><b>${d.getDate()}</b><i>${GLY[e]||"&nbsp;"}</i></button>`; }).join("")+`<div class="n">${ok}/5</div></div>`;
+  }
+  h+=`</div><div class="legend"><span class="l-ok">Cumplida</span><span class="l-wa">En curso</span><span class="l-ba">Con brecha</span><span>Pendiente</span></div></div>`;
+  // indicadores
+  const dc=Math.round((S.cierre-t)/864e5);
+  h+=`<h2>Indicadores</h2><div class="kpis">
+    <div class="kpi"><b>${s.ent}/25</b><span>Entregables recibidos</span></div>
+    <div class="kpi"><b>${s.firm}/25</b><span>Actividades con las 3 firmas</span></div>
+    <div class="kpi"><b>${s.prom==null?"–":s.prom.toFixed(1)}</b><span>Puntaje promedio (máx. 3)</span></div>
+    <div class="kpi"><b>${s.abiertas}</b><span>Brechas abiertas</span></div><div class="kpi"><b>${qStats().resp}/25</b><span>Evaluaciones del técnico respondidas</span></div><div class="kpi"><b>${qStats().prom==null?"–":Math.round(qStats().prom*100)+" %"}</b><span>Promedio de las evaluaciones</span></div></div>
+    <p class="note">${dc>0?`Faltan ${dc} días para el cierre de brechas (${fmtL(S.cierre)}).`:dc===0?"Hoy es el cierre de brechas.":"El plazo de cierre de brechas ya pasó."}</p>`;
+  // atrasadas
+  const late=D.acts.filter(a=>S.dates[a.n-1]<t && !same(S.dates[a.n-1],t) && estado(a.id)!=="cumplida");
+  if(late.length){ h+=`<h2>Atrasadas (${late.length})</h2><div class="list">`+late.slice(0,6).map(a=>rowHtml(a)).join("")+`</div>`+(late.length>6?`<p class="note">y ${late.length-6} más en la pestaña Plan.</p>`:""); }
+  h+=`<h2>Reporte</h2><button class="btn ghost" data-act="copy">Copiar resumen para enviar</button><p class="note">Pega el texto en WhatsApp o en un correo a gerencia.</p>`;
+  return h;
+}
+function rowHtml(a){
+  const e=estado(a.id), r=rec(a.id), d=S.dates[a.n-1];
+  return `<button class="row" data-act="open" data-id="${a.id}"><span class="d">${fmt(d)}</span><span class="m"><b>${esc(a.tit)}</b><small>S${a.sem} · día ${a.dia}</small></span>${r.res?`<span class="sc">${r.res}/3</span>`:""}${chip(e)}</button>`;
+}
+function viewPlan(){
+  const F=[["todas","Todas"],["pend","Pendientes"],["curso","En curso"],["brecha","Con brecha"],["cumplida","Cumplidas"]];
+  let h=`<div class="filters" role="group" aria-label="Filtro">`+F.map(([k,l])=>`<button class="fb" data-act="filter" data-k="${k}" aria-pressed="${S.filter===k}">${l}</button>`).join("")+`</div>`;
+  let any=false;
+  for(let w=1;w<=5;w++){
+    const as=D.acts.filter(a=>a.sem===w && (S.filter==="todas"||estado(a.id)===S.filter));
+    if(!as.length) continue; any=true;
+    const ok=D.acts.filter(a=>a.sem===w&&estado(a.id)==="cumplida").length;
+    h+=`<details class="wk" open><summary><span>Semana ${w}</span><span class="th">${esc(D.themes[w])}</span><span class="ct">${ok}/5</span></summary><div class="list">${as.map(rowHtml).join("")}</div></details>`;
+  }
+  if(!any) h+=`<div class="empty">No hay actividades en este filtro.</div>`;
+  return h;
+}
+function viewEquipo(){
+  const role=ROLES[S.role], mine=D.acts.filter(a=>rolesOf(a).includes(role));
+  const ok=mine.filter(a=>estado(a.id)==="cumplida").length, br=mine.filter(a=>estado(a.id)==="brecha").length;
+  let h=`<div class="rolebar" role="group" aria-label="Responsable">`+ROLES.map((r,i)=>`<button class="fb" data-act="role" data-k="${i}" aria-pressed="${S.role===i}">${ROLE_SHORT[i]} (${D.acts.filter(a=>rolesOf(a).includes(r)).length})</button>`).join("")+`</div>`;
+  h+=`<h2 style="margin-top:6px">${esc(role)}</h2><div class="rsum"><span><b>${mine.length}</b> actividades</span><span><b>${ok}</b> cumplidas</span><span><b>${mine.length-ok-br}</b> por completar</span>${br?`<span><b>${br}</b> con brecha</span>`:""}</div>`;
+  for(let w=1;w<=5;w++){
+    const as=mine.filter(a=>a.sem===w); if(!as.length) continue;
+    h+=`<details class="wk" open><summary><span>Semana ${w}</span><span class="th">${esc(D.themes[w])}</span><span class="ct">${as.length} act.</span></summary><div class="list">`+as.map(a=>{ const e=estado(a.id), d=S.dates[a.n-1];
+      return `<button class="row" data-act="open" data-id="${a.id}"><span class="d">${fmt(d)}</span><span class="m"><b>${esc(a.tit)}</b><small class="t">${esc(tarea(a,role))}</small></span>${chip(e)}</button>`; }).join("")+`</div></details>`;
+  }
+  return h;
+}
+function viewBrechas(){
+  let h=`<h2 style="margin-top:4px">Nueva brecha</h2><div class="card"><label class="f" for="b-act" style="margin-top:0">Actividad</label><select id="b-act">${D.acts.map(a=>`<option value="${a.id}">S${a.sem}-D${a.dia} · ${esc(a.tit)}</option>`).join("")}</select>
+    <label class="f" for="b-desc">Brecha detectada</label><textarea id="b-desc" placeholder="Qué no se cumplió"></textarea>
+    <label class="f" for="b-acc">Acción de mejora</label><input type="text" id="b-acc" placeholder="Qué se hará para cerrarla">
+    <label class="f" for="b-resp">Responsable</label><input type="text" id="b-resp" placeholder="Nombre">
+    <label class="f" for="b-fecha">Fecha compromiso</label><input type="date" id="b-fecha">
+    <div style="margin-top:14px"><button class="btn" data-act="addb" style="width:100%">Registrar brecha</button></div></div>`;
+  const bs=S.brechas.slice().sort((a,b)=>(b.ts||0)-(a.ts||0));
+  h+=`<h2>Registradas (${bs.length})</h2>`;
+  if(!bs.length) h+=`<div class="empty">Todavía no hay brechas. Una actividad calificada como «No aprobado» te lleva a registrar una.</div>`;
+  else h+=`<div class="bgrid">`+bs.map(b=>{ const a=D.acts.find(x=>x.id===b.act); return `<div class="bitem"><div class="h"><b>${a?`S${a.sem}-D${a.dia} · ${esc(a.tit)}`:"Actividad"}</b><span class="chip ${b.estado==="Cerrada"?"cumplida":b.estado==="En gestión"?"curso":"brecha"}">${esc(b.estado||"Abierta")}</span></div>
+    <div>${esc(b.desc)}</div>${b.acc?`<div class="note"><b>Acción:</b> ${esc(b.acc)}</div>`:""}<div class="note">${b.resp?"Responsable: "+esc(b.resp)+" · ":""}${b.fecha?"Compromiso: "+fmt(parse(b.fecha)):"Sin fecha"}</div>
+    <div class="stack" style="flex-direction:row;gap:6px">${["Abierta","En gestión","Cerrada"].map(s=>`<button class="fb" style="flex:1;min-height:40px;padding:6px 4px" data-act="bstate" data-id="${b.id}" data-s="${s}" aria-pressed="${(b.estado||"Abierta")===s}">${s}</button>`).join("")}</div></div>`; }).join("")+`</div>`;
+  return h;
+}
+function viewAjustes(){
+  const c=S.cfg;
+  return `<h2 style="margin-top:4px">Colaborador</h2><div class="card"><label class="f" for="c-nom" style="margin-top:0">Nombre</label><input type="text" id="c-nom" value="${esc(c.nombre)}" placeholder="Nombre del técnico">
+    <label class="f" for="c-ini">Fecha de inicio del plan</label><input type="date" id="c-ini" value="${esc(c.inicio)}">
+    <p class="note">Al cambiar la fecha, las 25 actividades se reprograman en días hábiles y sin festivos. Primera actividad: ${fmtL(S.dates[0])}. Última: ${fmtL(S.dates[24])}. Cierre de brechas: ${fmtL(S.cierre)}.</p>
+    <label class="f" for="c-jefe">Jefe inmediato</label><input type="text" id="c-jefe" value="${esc(c.jefe)}">
+    <label class="f" for="c-resp">Responsable del proceso</label><input type="text" id="c-resp" value="${esc(c.resp)}" placeholder="Nombre"></div>
+  <h2>Cuenta</h2><div class="card"><button class="btn ghost" style="width:100%" onclick="window.salir&&window.salir()">Cerrar sesión de este dispositivo</button></div>
+  <h2>Festivos descontados</h2><div class="card"><div>${D.fest.map(f=>fmtL(parse(f))).join(" · ")}</div></div>
+  <h2>Registro fotográfico</h2><div class="card"><button class="btn ghost" style="width:100%" data-act="fm21">Abrir formato M21${formAny("m21")?" · con datos":""}</button><p class="note">Formato transversal del plan. Una línea por foto.</p></div>
+  <h2>Datos</h2><div class="card"><div>${DB?"Los datos se guardan en la base compartida del plan (Firebase) y se ven al instante en cualquier dispositivo.":"Los datos se guardan solo en este navegador."}</div>
+  <p class="note">Escala de calificación: Aprobado = 3, Aprobado con observaciones = 2, No aprobado = 1. Una actividad queda cumplida con resultado 2 o 3, entregable recibido y las tres firmas.</p></div>`;
+}
+function kitRows(){
+  return Object.keys(D.kits).map(Number).map(k=>{
+    const acts=D.acts.filter(a=>a.kit===k), fs=k===21?[F.m21]:acts.map(a=>F[a.n]);
+    const cods=[...new Set(fs.map(f=>f.cod))];
+    const nuevo=cods.some(x=>/Por codificar/.test(x));
+    const ref=cods.map(x=>x.replace(/^Por codificar( · )?/,"")).filter(Boolean).join(" · ");
+    return {k,tit:D.kits[k],nuevo,ref,dias:k===21?"Todo el plan":acts.map(a=>"S"+a.sem+"-D"+a.dia).join(", ")};
+  });
+}
+function viewTH(){
+  const s=stats(), c=S.cfg, t=todayD(), y=S.dates[0].getFullYear(), pct=Math.round(s.st.cumplida/25*100), K=kitRows(), nuevos=K.filter(x=>x.nuevo);
+  let h=`<section class="hero"><div class="lbl">Documento para revisión de Talento Humano</div><div class="th-t">Plan de abordaje del Técnico Integral de Geotube®</div><div class="sub" style="justify-content:flex-start;gap:14px;flex-wrap:wrap"><span>Perfil de cargo GTH-FR-042</span><span>${fmt(S.dates[0])} al ${fmt(S.dates[24])} de ${y}</span><span>25 días hábiles</span></div></section>`;
+  h+=`<h2>1. Ficha del plan</h2><dl class="kv th-kv">
+    <div><dt>Cargo</dt><dd>Técnico Integral de Geotube® · GTH-FR-042</dd></div>
+    <div><dt>Colaborador</dt><dd>${esc(c.nombre||"Por asignar")}</dd></div>
+    <div><dt>Jefe inmediato</dt><dd>${esc(c.jefe||"Líder de Proyectos")}</dd></div>
+    <div><dt>Responsable del proceso</dt><dd>${esc(c.resp||"Por asignar")}</dd></div>
+    <div><dt>Periodo</dt><dd>${fmtL(S.dates[0])} al ${fmtL(S.dates[24])} de ${y}</dd></div>
+    <div><dt>Cierre de brechas</dt><dd>${fmtL(S.cierre)} de ${S.cierre.getFullYear()}</dd></div>
+    <div><dt>Duración</dt><dd>5 semanas, una actividad por día hábil, sin festivos</dd></div>
+    <div><dt>Elaboró</dt><dd>Andrés Felipe Montaña Camacho · Líder de Proyectos</dd></div></dl>`;
+  h+=`<h2>2. Objetivo</h2><div class="card"><p class="th-p">Habilitar al Técnico Integral de Geotube® para operar el sistema de deshidratación de lodos con Geotube® de forma segura, con calidad y con autonomía, conforme al perfil de cargo GTH-FR-042. El plan combina inducción, práctica supervisada en campo y evaluación de cada actividad con evidencia firmada.</p></div>`;
+  h+=`<h2>3. Estructura por semanas</h2><div class="card th-scroll"><table class="tt"><thead><tr><th>Sem.</th><th>Tema</th><th>Fechas</th><th>Actividades</th></tr></thead><tbody>`+[1,2,3,4,5].map(w=>{ const as=D.acts.filter(a=>a.sem===w); return `<tr><td>${w}</td><td><b>${esc(D.themes[w])}</b></td><td class="nw">${fmt(S.dates[(w-1)*5])} – ${fmt(S.dates[w*5-1])}</td><td>${as.map(a=>esc(a.tit)).join("; ")}</td></tr>`; }).join("")+`</tbody></table></div>`;
+  h+=`<h2>4. Responsables</h2><div class="card"><ul class="who">`+ROLES.map(r=>{ const as=D.acts.filter(a=>rolesOf(a).includes(r)); return `<li><b>${esc(r)}</b><span>${as.length>=15?as.length+" de 25 actividades":as.length+(as.length===1?" actividad: ":" actividades: ")+as.map(a=>"S"+a.sem+"-D"+a.dia).join(", ")}</span></li>`; }).join("")+`</ul><p class="note">Talento Humano lidera la inducción del día 1 (${fmtL(S.dates[0])}) y firma el acta de cierre del día 25 (${fmtL(S.dates[24])}).</p></div>`;
+  h+=`<h2>5. Evaluación y aprobación</h2><div class="card"><ul class="th-ul">
+    <li>Cada actividad se califica: Aprobado = 3, Aprobado con observaciones = 2, No aprobado = 1.</li>
+    <li>Una actividad queda cumplida con resultado 2 o 3, el entregable recibido y tres firmas: colaborador, revisor y jefe inmediato.</li>
+    <li>Una actividad «No aprobada» genera una brecha con acción de mejora, responsable y fecha compromiso.</li>
+    <li>Evaluaciones de inducción (día 1) y HSEQ (día 2): nota mínima de 80 %.</li>
+    <li>Examen final (día 24): mínimo 3 de 5 en seguridad, operación, calidad, mantenimiento básico y disciplina de registro.</li>
+    <li>El acta de cierre (día 25) define la habilitación para operar: Sí, Sí con seguimiento o No aún.</li></ul></div>`;
+  h+=`<h2>6. Formatos y evidencias</h2><div class="card th-scroll"><table class="tt"><thead><tr><th>Cód.</th><th>Formato</th><th>Días</th><th>Estado</th></tr></thead><tbody>`+K.map(x=>`<tr><td class="nw"><b>M${x.k}</b></td><td>${esc(x.tit)}${x.ref?`<br><small>${esc(x.ref)}</small>`:""}</td><td>${esc(x.dias)}</td><td>${x.nuevo?'<span class="chip curso">Por codificar</span>':'<span class="chip cumplida">Vigente</span>'}</td></tr>`).join("")+`</tbody></table><p class="note">${nuevos.length} formatos son propuestos y requieren codificación en el sistema documental. Los demás usan formatos vigentes de la compañía.</p></div>`;
+  h+=`<h2>7. Solicitudes a Talento Humano</h2><div class="card"><ol class="th-ul">
+    <li>Revisar y aprobar el plan, los criterios de evaluación y la escala de calificación.</li>
+    <li>Codificar los ${nuevos.length} formatos propuestos: ${nuevos.map(x=>"M"+x.k).join(", ")}.</li>
+    <li>Confirmar si el examen final (escala de 1 a 5) se integra a la evaluación de desempeño del cargo.</li>
+    <li>Archivar el acta de cierre y las evidencias en la hoja de vida del colaborador.</li></ol></div>`;
+  h+=`<h2>8. Estado a la fecha</h2><div class="card"><div class="rsum" style="padding:0"><span>Corte: <b>${fmt(t)} de ${t.getFullYear()}</b></span><span><b>${s.st.cumplida}</b> de 25 cumplidas (${pct} %)</span><span><b>${s.st.curso}</b> en curso</span><span><b>${s.abiertas}</b> brechas abiertas</span></div></div>`;
+  h+=`<h2>9. Aprobación</h2><div class="card th-scroll"><table class="tt sig"><thead><tr><th></th><th>Nombre</th><th>Cargo</th><th>Firma</th><th>Fecha</th></tr></thead><tbody>
+    <tr><td><b>Elaboró</b></td><td>Andrés Felipe Montaña Camacho</td><td>Líder de Proyectos</td><td></td><td></td></tr>
+    <tr><td><b>Revisó</b></td><td></td><td>Talento Humano</td><td></td><td></td></tr>
+    <tr><td><b>Aprobó</b></td><td></td><td>Gerencia de Operaciones</td><td></td><td></td></tr></tbody></table></div>`;
+  h+=`<div class="noprint" style="display:flex;gap:8px;margin-top:18px"><button class="btn" style="flex:1" data-act="print">Imprimir o guardar PDF</button><button class="btn ghost" style="flex:1" data-act="thcopy">Copiar para correo</button></div><p class="note noprint">La sección 8 se actualiza con lo que se valide en la pestaña Plan.</p>`;
+  return h;
+}
+function thText(){
+  const s=stats(), c=S.cfg, y=S.dates[0].getFullYear(), nuevos=kitRows().filter(x=>x.nuevo);
+  return ["Plan de abordaje – Técnico Integral de Geotube® (perfil GTH-FR-042)",
+    "Colaborador: "+(c.nombre||"por asignar")+" · Jefe inmediato: "+(c.jefe||"Líder de Proyectos"),
+    "Periodo: "+fmt(S.dates[0])+" al "+fmt(S.dates[24])+" de "+y+" (25 días hábiles, 5 semanas) · Cierre de brechas: "+fmt(S.cierre),
+    "", "Estructura:",
+    ...[1,2,3,4,5].map(w=>"Semana "+w+" ("+fmt(S.dates[(w-1)*5])+" – "+fmt(S.dates[w*5-1])+"): "+D.themes[w]),
+    "", "Evaluación: cada actividad se califica 3, 2 o 1 y queda cumplida con resultado 2 o 3, entregable recibido y tres firmas. Examen final con mínimo 3 de 5 por área. El acta de cierre define la habilitación para operar.",
+    "", "Solicitudes a Talento Humano:",
+    "1. Revisar y aprobar el plan y sus criterios de evaluación.",
+    "2. Codificar los "+nuevos.length+" formatos propuestos ("+nuevos.map(x=>"M"+x.k+" "+x.tit).join("; ")+").",
+    "3. Confirmar si el examen final se integra a la evaluación de desempeño del cargo.",
+    "4. Archivar el acta de cierre y las evidencias en la hoja de vida del colaborador.",
+    "", "Avance a la fecha: "+s.st.cumplida+" de 25 actividades cumplidas · "+s.abiertas+" brechas abiertas."].join("\n");
+}
+function renderMain(){
+  tabsFor(); const v=!S.who?viewWho:S.who==="tec"?({hoy:viewHoy,mi:viewMi,notas:viewNotas}[S.tab]||viewHoy):({th:viewTH,resumen:viewResumen,plan:viewPlan,equipo:viewEquipo,brechas:viewBrechas,ajustes:viewAjustes}[S.tab]||viewResumen);
+  const keep=document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)&&$("#main").contains(document.activeElement);
+  if(keep) return;
+  $("#main").innerHTML=v();
+}
+function renderHead(){
+  $("#who").textContent=(S.who==="tec"?"Sesión del técnico":S.who==="eva"?"Sesión del evaluador":"Técnico Integral de Geotube®")+(S.cfg.nombre?" · "+S.cfg.nombre:""); $("#swb").hidden=!S.who;
+  const sy=$("#sync"); sy.className="sync"+(S.mode==="db"?" live":S.mode==="local"?" warn":"");
+  sy.textContent=S.mode==="db"?"Sincronizado":S.mode==="local"?"Solo este equipo":"Cargando";
+  $("#banner").innerHTML=S.mode==="local"?`<div class="banner">No hay conexión con la base compartida. Lo que valides se guarda solo en este navegador.</div>`:"";
+}
+
+/* ---------- formatos (kit de materiales) ---------- */
+const col = s => { const p = s.split("|"), m = (p[1] || "txt").split(":"); return {h:p[0], ty:m[0], o:m[1] ? m[1].split(",") : null}; };
+const CK = (k, items) => ({t:"chk", k, items});
+const TB = (k, rows, cols) => ({t:"tbl", k, rows:Array.isArray(rows) ? rows : null, n:typeof rows === "number" ? rows : 0, cols:cols.map(col)});
+const TX = (k, l, area) => ({t:"txt", k, l, area:!!area});
+const IN = x => ({t:"info", x});
+const HD = x => ({t:"hd", x});
+const SC = (k, c, of, min, l) => ({t:"score", k, c, of, min, l});
+const AV = (k, c, l) => ({t:"avg", k, c, l});
+const CUMPLE = ["Cumple|ok", "Observación|txt"];
+const F = {};
+F[1] = {m:"M1", tit:"Acta de inducción y evaluación escrita", cod:"Por codificar", b:[
+  HD("Constancia de inducción"),
+  CK("c", ["Recibí y firmé el perfil de cargo GTH-FR-042","Recibí el reglamento interno y los lineamientos del proceso","Asistí a la inducción de Talento Humano","Conozco mis responsabilidades y el plan de abordaje"]),
+  HD("Evaluación escrita"),
+  TB("q", [["¿A quién reporta el cargo?","Líder de Proyectos"],["¿Cuál es el objetivo del cargo?","Apoyar actividades de cierta complejidad que demandan conocimientos técnicos, según los procesos y procedimientos del área de Operaciones"],["¿Qué entrenamiento exige el perfil?","Curso de 50 horas"],["¿Cuánto dura el plan de abordaje y cómo se organiza?","5 semanas, una actividad por día"],["¿Qué se debe hacer al ver un acto o condición insegura?","Reportarlo según los lineamientos HSEQ"],["¿Qué función tiene el cargo frente al polímero floculante?","Controlar la continuidad del sistema dosificando en las cantidades y tiempos establecidos"],["¿Qué debe verificar el cargo del llenado del Geotube®?","Que se haga a la altura y volumen establecidos"],["¿Qué evidencia se entrega al terminar cada actividad?","El formato diligenciado y firmado"],["¿Quién firma el cierre del plan?","Responsable del proceso y colaborador"],["¿Qué pasa si una actividad queda «No aprobada»?","Se registra una brecha y un plan de mejora"]], ["Respuesta del colaborador|area","Respuesta correcta|ok"]),
+  SC("q", 1, 10, 8, "Nota de la evaluación")]};
+F[2] = {m:"M2", tit:"Asistencia y evaluación de inducción HSEQ", cod:"Por codificar", b:[
+  TB("t", ["SG-SST","PESV","Uso de EPP","Reporte de actos y condiciones inseguras","Lineamientos para permisos de trabajo","Inducción de Proyectos"], ["Asistió|ok","Evaluación|sel:Correcta,Incorrecta"]),
+  TX("nota", "Nota de la evaluación (%)"), IN("Criterio: 80 % o más y ninguna respuesta errónea en EPP ni en permisos de trabajo.")]};
+F[3] = {m:"M3", tit:"Guía de recorrido y validación oral del flujo del proceso", cod:"Por codificar", b:[
+  TB("t", ["Recepción y bombeo del lodo","Preparación y dosificación del polímero","Distribución en manifolds y válvulas","Llenado del Geotube®","Clarificado y retorno"], ["Visitado|ok","Lo explica sin error grave|ok"]),
+  TX("pc", "Puntos críticos de control que identificó", true), TX("roles", "Roles del equipo que reconoce", true)]};
+F[4] = {m:"M4", tit:"Checklist de identificación de equipos", cod:"Checklist preoperacional vigente", b:[
+  TB("t", ["Sistema de bombeo","Equipo de polímero","Tanques","Manifolds","Válvulas","Bomba de clarificado","Herramientas"], ["Lo identifica|ok","Estado visible|txt","Observación|txt"]),
+  IN("Criterio: identifica el 100 % de los equipos.")]};
+F[5] = {m:"M5", tit:"Práctica de prueba de jarras y retorta", cod:"GPY-FR-022 · GPY-IN-022", b:[
+  IN("Se usa la calculadora vigente GPY-FR-022. Esta hoja confirma la práctica y guarda los resultados básicos."),
+  CK("c", ["Prueba de jarras ejecutada sin omitir pasos","Retorta ejecutada y resultados registrados","Muestreo y variables fisicoquímicas clave anotadas","Resultados dentro del rango que defina el Ingeniero QAQC"]),
+  TX("res", "Resultados básicos de la práctica", true)]};
+F[6] = {m:"M6", tit:"Checklist de pasos críticos de polímero · Parte A", cod:"Por codificar · alinear con GPY-IN-019", b:[
+  HD("Preparación y dosificación segura"),
+  TB("t", ["Usa los EPP definidos para manejo de polímero","Verifica agua de preparación, compresor y tolva antes de arrancar","Prepara el polímero en la cantidad indicada por la calculadora GPY-FR-021","Opera el equipo de preparación y dosificación según GPY-IN-019","Maneja y almacena el polímero sin derrames","Registra la dosificación en el formato de control"], CUMPLE),
+  IN("Criterio: 100 % de los pasos críticos de seguridad y preparación.")]};
+F[7] = {m:"M7", tit:"Ejercicio de cálculo de dosis y consumo", cod:"GPY-FR-021 · GPY-FR-022", b:[
+  IN("Se usa la calculadora vigente GPY-FR-021. Aquí se anotan los datos del ejercicio."),
+  TB("t", ["Resultado de la prueba de jarras usado","Dosis calculada","Consumo proyectado de polímero","Valor validado por el jefe inmediato","Diferencia frente al valor validado"], ["Valor|txt"]),
+  IN("Criterio: diferencia dentro de la tolerancia que fije el Líder de Proyectos.")]};
+F[8] = {m:"M8", tit:"Control de dosificación, inventario y horómetro · Día 3", cod:"GPY-FR-025", b:[
+  CK("c", ["Registré el consumo de polímero del día en GPY-FR-025","Leí el horómetro y reporté las horas del equipo","Conté el inventario físico y lo concilié con el registro","Dejé la solicitud de abastecimiento al Líder de Cadena de Abastecimiento"]),
+  TX("dif", "Diferencia entre inventario físico y registro"), TX("jus", "Justificación de la diferencia", true)]};
+F[9] = {m:"M8", tit:"Muestreo y ajuste de dosis · Día 4", cod:"GPY-FR-025 · GPY-IN-019", b:[
+  HD("Registro de muestreos"),
+  TB("t", 3, ["Hora|txt","Punto de muestreo|txt","Separación de fases observada|txt","Dosis actual|txt","Ajuste propuesto|txt"]),
+  IN("Criterio: toma la muestra en el punto correcto, interpreta la separación de fases y propone un ajuste coherente.")]};
+F[10] = {m:"M6", tit:"Checklist de pasos críticos de polímero · Parte B", cod:"Checklist preoperacional vigente", b:[
+  HD("Verificación preoperacional del equipo"),
+  TB("t", ["Compresor","Bomba de agua","Elementos de medición","Elementos de control"], ["Estado|sel:OK,Falla","Hallazgo crítico|sel:No,Sí"]),
+  IN("Criterio: aprobado sin hallazgos críticos.")]};
+F[11] = {m:"M9", tit:"Práctica supervisada de válvulas y manifolds", cod:"Por codificar", b:[
+  IN("Lo diligencia el Líder de Proyectos durante la práctica."),
+  TB("t", ["Apertura y cierre de válvulas hacia cada Geotube®","Operación de manifolds","Verificación de la línea de conducción","Comunicación por radio con el equipo","Distribución homogénea del lodo"], ["Correcta|ok","Corrección indicada en campo|txt"])]};
+F[12] = {m:"M10", tit:"Reporte de llenado y estimación volumétrica", cod:"Formato de reporte de llenado vigente", b:[
+  TB("t", 3, ["Fecha y hora|txt","Geotube®|txt","Largo (m)|num","Ancho (m)|num","Altura (m)|num","Volumen estimado (m³)|num","Avance (%)|num"]),
+  TX("ref", "Volumen y altura de referencia según la U.E.N."), TX("dif", "Diferencia frente a la referencia")]};
+F[13] = {m:"M11", tit:"Lista de observación directa", cod:"Por codificar", b:[
+  IN("Lo diligencia el observador."),
+  TB("t", ["Acomodación de mangueras en los puertos de entrega","Posicionamiento del Geotube® verificado","Sin deformaciones ni sobrellenado","Uso de elementos de izaje o apoyo autorizados","Cumple las normas de seguridad y usa EPP"], CUMPLE)]};
+F[14] = {m:"M12", tit:"Bitácora de limpieza y clarificado · Día 4", cod:"Bitácora de operación vigente", b:[
+  TB("t", 2, ["Hora|txt","Limpieza del Geotube® realizada|ok","Color o textura del clarificado|txt","Cambio detectado|txt","Acción tomada|txt"])]};
+F[15] = {m:"M12", tit:"Evaluación de la bomba de clarificado · Día 5", cod:"Checklist de operación (hoja 7)", b:[
+  TB("t", ["Arranque de la bomba con el checklist de operación","Monitoreo durante la operación (tablero o control)","Continuidad del proceso de deshidratación","Reporte oportuno de fallas"], CUMPLE)]};
+F[16] = {m:"M13", tit:"Acta de verificación de terreno · Día 1", cod:"Por codificar", b:[
+  TB("t", ["Área disponible (largo × ancho)","Nivelación y estado del terreno","Acceso de equipos y mangueras","Distancia a bombas y puntos de descarga","Riesgos del área y EPP requeridos"], ["Medida o estado|txt","Cumple el criterio mínimo|ok"]),
+  TX("crit", "Criterios mínimos de instalación fijados por el Líder de Proyectos", true)]};
+F[17] = {m:"M13", tit:"Checklist de montaje · Día 2", cod:"Por codificar", b:[
+  CK("c", ["Corté y preparé los materiales con las medidas tomadas","Verifiqué los insumos del proyecto antes de montar","Monté los equipos conforme a los requerimientos técnicos de operación","Usé herramientas y EPP adecuados","El montaje quedó sin hallazgos críticos"])]};
+F[18] = {m:"M14", tit:"Morfología de la línea de lodos", cod:"GPY-FR-024", b:[
+  IN("Se usa el formato vigente GPY-FR-024. Esta hoja confirma la entrega."),
+  CK("c", ["GPY-FR-024 diligenciado con el trazado de la línea instalada","Accesorios y soportes revisados","Trazado aprobado en la revisión técnica de campo"])]};
+F[19] = {m:"M15", tit:"Prueba hidrostática y de funcionamiento", cod:"GPY-FR-019 · PIC de instalación", b:[
+  IN("Se usa el formato vigente GPY-FR-019 y el PIC de instalación. Esta hoja confirma la entrega."),
+  CK("c", ["GPY-FR-019 diligenciado con el resultado de la prueba hidrostática","Prueba de funcionamiento de equipos ejecutada antes del arranque","Resultados registrados y conformes"])]};
+F[20] = {m:"M16", tit:"Checklist de mantenimiento básico y tiempo de respuesta", cod:"Checklist de mantenimiento (hoja 7)", b:[
+  TB("t", ["Mantenimiento básico de equipos","Desatascamiento de bombas","Abastecimiento de combustible","Aviso de fallas visibles"], ["Ejecutada|ok","Hora de aviso o falla|txt","Hora de atención|txt","Tiempo de respuesta|txt"]),
+  TX("max", "Tiempo máximo fijado por el Líder de Proyectos (minutos)")]};
+F[21] = {m:"M17", tit:"Observación de turno completo · Día 1", cod:"Por codificar", b:[
+  IN("Puntaje de 1 a 5 por área; 3 equivale a «Bueno» en la evaluación de desempeño."),
+  TB("t", ["Polímero y dosificación","Bombeo","Geotube® y llenado","Clarificado","Registros diarios y bitácora","Interacción con el equipo y comunicación","Seguridad y EPP"], ["Puntaje (1 a 5)|num","Evidencia observada|txt"]),
+  AV("t", 0, "Promedio del turno"), TX("ret", "Retroalimentación entregada al colaborador", true)]};
+F[22] = {m:"M17", tit:"Caso práctico de calidad · Día 2", cod:"Por codificar", b:[
+  TB("t", ["Muestreo realizado","Ajuste de dosis","Control de separación de fases","Uso racional de insumos"], ["Dato que respalda la decisión|txt","Revisión del evaluador|txt"]),
+  IN("Criterio: decisiones de muestreo y dosis justificadas con datos.")]};
+F[23] = {m:"M18", tit:"Lista de verificación de autonomía", cod:"Por codificar", b:[
+  TB("t", ["Dosifica y ajusta el polímero","Opera válvulas y manifolds","Controla el llenado del Geotube®","Opera la bomba de clarificado","Diligencia los registros del día","Reporta fallas y condiciones inseguras"], ["Nivel|sel:Lo hace solo,Con apoyo,Aún no"]),
+  TX("dudas", "Dudas técnicas cerradas en la reunión 1:1", true)]};
+F[24] = {m:"M19", tit:"Examen final teórico-práctico", cod:"Por codificar", b:[
+  HD("Parte 1 · Cuestionario"),
+  TB("q", [["¿Qué permisos y EPP exige la tarea de preparar polímero?","Los de la inducción HSEQ y GPY-IN-019"],["¿Cómo se reporta un acto o condición insegura?","Según los lineamientos HSEQ"],["¿Qué componentes del equipo de polímero se verifican antes de operar?","Compresor, bomba de agua, elementos de medición y control"],["¿Qué se mide para controlar el llenado del Geotube®?","Largo, ancho y altura, y el volumen estimado"],["¿Para qué sirve la prueba hidrostática y con qué formato se registra?","Verifica la línea antes del arranque; GPY-FR-019"],["¿Qué información alimenta el cálculo de dosis?","Resultados de la prueba de jarras y condiciones del proceso, en GPY-FR-021"],["¿Qué se observa en el muestreo en línea para ajustar la dosis?","La separación de fases"],["¿Qué se hace ante una bomba atascada?","Desatascarla según el procedimiento y avisar la falla"],["¿Qué formato lleva el control de consumo de polímero?","GPY-FR-025"],["¿Qué se anota en la bitácora de operación?","Novedades operativas del turno"]], ["Respuesta del colaborador|area","Respuesta correcta|ok"]),
+  SC("q", 1, 10, 7, "Puntaje del cuestionario"),
+  HD("Parte 2 · Checklist práctico"),
+  TB("p", ["Prepara y dosifica polímero con los pasos críticos","Opera válvulas y manifolds","Mide y reporta el llenado del Geotube®","Arranca y monitorea la bomba de clarificado","Diligencia los registros del proceso sin omisiones"], CUMPLE),
+  HD("Resultado por área (1 a 5)"),
+  TB("a", ["Seguridad","Operación","Calidad","Mantenimiento básico","Disciplina de registro"], ["Puntaje (1 a 5)|num"]),
+  AV("a", 0, "Promedio del examen"), IN("Criterio: mínimo 3 de 5 en cada área. Las áreas por debajo de 3 pasan al plan de cierre de brechas."),
+  TX("plan", "Plan de cierre de brechas", true)]};
+F[25] = {m:"M20", tit:"Retroalimentación final y acta de cierre", cod:"Por codificar", b:[
+  {t:"auto25"},
+  HD("Brechas remanentes"),
+  TB("b", 2, ["Brecha remanente|txt","Plan de mejora|txt","Responsable|txt","Fecha compromiso|dt"]),
+  TB("h", ["Habilitación para operar"], ["Decisión|sel:Sí,Sí con seguimiento,No aún"]),
+  TX("obs", "Observaciones del colaborador", true)]};
+F.m21 = {m:"M21", tit:"Registro fotográfico del plan", cod:"Por codificar", general:true, b:[
+  IN("Una línea por foto. Las fotos se cargan en la hoja de cada actividad; aquí se deja el registro con fecha, lugar y qué muestra."),
+  TB("f", 5, ["Fecha|dt","Semana-día|txt","Actividad|txt","Lugar o área|txt","Qué muestra la foto|txt","Archivo|txt"]),
+  IN("Reglas: fotos con EPP completo, sin personas ajenas al plan y sin información confidencial visible; cumplir los lineamientos de la refinería sobre el uso de cámaras.")]};
+
+const OKO = ["Sí","No"];
+const fv = (id,k) => (S.forms[id] && S.forms[id].v && S.forms[id].v[k]) || "";
+function rowsOf(b,id){ return b.rows ? b.rows.length : Math.max(b.n, Number(fv(id,b.k+"_n"))||0); }
+function staticKeys(sc){
+  const ks=[];
+  sc.b.forEach(b=>{
+    if(b.t==="chk") b.items.forEach((_,i)=>ks.push(b.k+i));
+    else if(b.t==="txt") ks.push(b.k);
+    else if(b.t==="tbl" && b.rows) b.rows.forEach((_,r)=>b.cols.forEach((_,c)=>ks.push(b.k+"_"+r+"_"+c)));
+  });
+  return ks;
+}
+function formPct(id,sc){
+  const ks=staticKeys(sc); if(!ks.length) return null;
+  const f=ks.filter(k=>fv(id,k)!=="").length; return Math.round(f/ks.length*100);
+}
+function formAny(id){ const v=S.forms[id]&&S.forms[id].v; return !!(v&&Object.keys(v).length); }
+const fid = () => S.open==="m21" ? "m21" : S.open;
+function scoreOf(id,b){
+  let n=0; for(let r=0;r<b.of;r++){ if(fv(id,b.k+"_"+r+"_"+b.c)==="Sí") n++; } return n;
+}
+function avgOf(id,b){
+  const sc=F[S.open==="m21"?"m21":D.acts.find(x=>x.id===id)?.n] ; let s=0,n=0;
+  for(let r=0;r<80;r++){ const raw=fv(id,b.k+"_"+r+"_"+b.c); if(raw==="") continue; const x=parseFloat(String(raw).replace(",",".")); if(!isNaN(x)){ s+=x; n++; } }
+  return n?s/n:null;
+}
+function fieldHtml(id,key,c,label){
+  const val=fv(id,key), a=`data-fk="${key}"`, lb=label?`<span class="fl">${esc(label)}</span>`:"";
+  if(c.ty==="ok"||c.ty==="sel"){ const os=c.ty==="ok"?OKO:c.o; return `<label class="ff">${lb}<select ${a}><option value="">Seleccionar</option>${os.map(o=>`<option value="${esc(o)}"${val===o?" selected":""}>${esc(o)}</option>`).join("")}</select></label>`; }
+  if(c.ty==="area") return `<label class="ff">${lb}<textarea ${a} rows="3">${esc(val)}</textarea></label>`;
+  if(c.ty==="dt") return `<label class="ff">${lb}<input type="date" ${a} value="${esc(val)}"></label>`;
+  if(c.ty==="num") return `<label class="ff">${lb}<input type="text" inputmode="decimal" ${a} value="${esc(val)}"></label>`;
+  return `<label class="ff">${lb}<input type="text" ${a} value="${esc(val)}"></label>`;
+}
+function blockHtml(id,b){
+  if(b.t==="hd") return `<h2>${esc(b.x)}</h2>`;
+  if(b.t==="info") return `<p class="note">${esc(b.x)}</p>`;
+  if(b.t==="chk") return `<div class="stack">${b.items.map((x,i)=>`<button class="tg" data-act="fchk" data-fk="${b.k+i}" aria-pressed="${fv(id,b.k+i)==="1"}"><span class="box">✓</span><span class="t">${esc(x)}</span></button>`).join("")}</div>`;
+  if(b.t==="txt") return `<label class="f" for="x-${b.k}">${esc(b.l)}</label>${b.area?`<textarea id="x-${b.k}" data-fk="${b.k}" rows="3">${esc(fv(id,b.k))}</textarea>`:`<input type="text" id="x-${b.k}" data-fk="${b.k}" value="${esc(fv(id,b.k))}">`}`;
+  if(b.t==="score") return `<div class="derived" data-sc="${b.k}" data-c="${b.c}" data-of="${b.of}" data-min="${b.min}"><span>${esc(b.l)}</span><b></b></div>`;
+  if(b.t==="avg") return `<div class="derived" data-av="${b.k}" data-c="${b.c}"><span>${esc(b.l)}</span><b></b></div>`;
+  if(b.t==="auto25"){
+    const s=stats(), ex=D.acts.find(a=>a.n===24), q=avgFrom(F[24],"a",0,"a24");
+    return `<div class="card" style="margin-top:6px"><div class="rsum" style="padding:0"><span><b>${s.st.cumplida}</b> de 25 actividades cumplidas</span><span><b>${s.st.brecha}</b> con brecha</span><span>Promedio del examen final: <b>${q==null?"sin dato":q.toFixed(1)}</b></span></div><p class="note">Colaborador: ${esc(S.cfg.nombre||"sin asignar")} · Plan del ${fmt(S.dates[0])} al ${fmt(S.dates[24])}</p></div>`;
+  }
+  if(b.t==="tbl"){
+    const n=rowsOf(b,id); let h="";
+    for(let r=0;r<n;r++){
+      const lab=b.rows?(Array.isArray(b.rows[r])?b.rows[r][0]:b.rows[r]):"Registro "+(r+1), hint=b.rows&&Array.isArray(b.rows[r])?b.rows[r][1]:"";
+      h+=`<div class="frow"><div class="fh">${b.rows?`<b>${esc(b.rows.length>1&&Array.isArray(b.rows[r])?(r+1)+". ":"")}${esc(lab)}</b>`:`<b>${esc(lab)}</b>`}${hint?`<small>Respuesta esperada: ${esc(hint)}</small>`:""}</div><div class="fg">${b.cols.map((c,ci)=>fieldHtml(id,b.k+"_"+r+"_"+ci,c,c.h)).join("")}</div></div>`;
+    }
+    if(!b.rows) h+=`<button class="btn ghost small" data-act="fadd" data-k="${b.k}" style="margin-top:8px">Agregar registro</button>`;
+    return h;
+  }
+  return "";
+}
+function avgFrom(sc,k,c,actId){
+  let s=0,n=0; for(let r=0;r<80;r++){ const raw=fv(actId,k+"_"+r+"_"+c); if(raw==="") continue; const x=parseFloat(String(raw).replace(",",".")); if(!isNaN(x)){s+=x;n++;} } return n?s/n:null;
+}
+function updateDerived(id){
+  document.querySelectorAll?.("[data-sc]").forEach(e=>{ const b={k:e.dataset.sc,c:Number(e.dataset.c),of:Number(e.dataset.of)}, n=scoreOf(id,b), min=Number(e.dataset.min); e.querySelector("b").textContent=n+" de "+b.of+(n>=min?" · aprueba":" · no alcanza el mínimo ("+min+")"); });
+  document.querySelectorAll?.("[data-av]").forEach(e=>{ const x=avgFrom(null,e.dataset.av,Number(e.dataset.c),id); e.querySelector("b").textContent=x==null?"–":x.toFixed(1)+" de 5"; });
+  const sc=currentForm(); const p=sc?formPct(id,sc):null; const el=$("#fpct"); if(el) el.textContent=p==null?"":p+" % diligenciado";
+}
+function currentForm(){ if(S.open==="m21") return F.m21; const a=D.acts.find(x=>x.id===S.open); return a?F[a.n]:null; }
+function formText(id,sc,a){
+  const L=[sc.m+". "+sc.tit, "Colaborador: "+(S.cfg.nombre||"________")+(a?" · Semana "+a.sem+" día "+a.dia+" · "+fmt(S.dates[a.n-1]):"")];
+  sc.b.forEach(b=>{
+    if(b.t==="hd") L.push("", b.x.toUpperCase());
+    else if(b.t==="chk") b.items.forEach((x,i)=>L.push((fv(id,b.k+i)==="1"?"[x] ":"[ ] ")+x));
+    else if(b.t==="txt") L.push(b.l+": "+(fv(id,b.k)||"________"));
+    else if(b.t==="tbl"){ const n=rowsOf(b,id); for(let r=0;r<n;r++){ const lab=b.rows?(Array.isArray(b.rows[r])?b.rows[r][0]:b.rows[r]):"Registro "+(r+1); L.push("- "+lab+": "+b.cols.map((c,ci)=>c.h+" "+(fv(id,b.k+"_"+r+"_"+ci)||"__")).join(" · ")); } }
+    else if(b.t==="score"){ L.push(b.l+": "+scoreOf(id,b)+" de "+b.of); }
+    else if(b.t==="avg"){ const x=avgFrom(null,b.k,b.c,id); L.push(b.l+": "+(x==null?"–":x.toFixed(1))); }
+  });
+  return L.join("\n");
+}
+function renderForm(sh){
+  const m21=S.open==="m21", a=m21?null:D.acts.find(x=>x.id===S.open), sc=m21?F.m21:F[a.n], id=m21?"m21":a.id;
+  const sc0=sh.scrollTop, p=formPct(id,sc);
+  const d=a?S.dates[a.n-1]:null, rev=a?rolesOf(a).filter(r=>r!==ROLES[0]).join(", "):"";
+  sh.hidden=false;
+  sh.innerHTML=`<div class="in sh"><div class="sh-top"><button class="iconbtn" data-act="fback" aria-label="Volver"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="ttl">${esc(sc.m)} · ${esc(sc.cod)}<b>${esc(sc.tit)}</b></div><span class="sync" id="fsave">Guardado</span></div>
+    <dl class="kv" style="grid-template-columns:1fr 1fr"><div><dt>Colaborador</dt><dd>${esc(S.cfg.nombre||"Sin asignar")}</dd></div><div><dt>${a?"Fecha programada":"Plan"}</dt><dd>${a?fmtL(d):fmt(S.dates[0])+" al "+fmt(S.dates[24])}</dd></div>${a?`<div><dt>Semana · día</dt><dd>${a.sem} · ${a.dia}</dd></div><div><dt>Revisa</dt><dd>${esc(rev||"–")}</dd></div>`:""}</dl>
+    <p class="note" id="fpct">${p==null?"":p+" % diligenciado"}</p>
+    ${sc.b.map(b=>blockHtml(id,b)).join("")}
+    <div style="display:flex;gap:8px;margin-top:18px"><button class="btn ghost" style="flex:1" data-act="fcopy">Copiar formato</button><button class="btn" style="flex:1" data-act="fback">${m21?"Cerrar":"Volver a la actividad"}</button></div>
+    <p class="note">El resultado, las firmas y el entregable se marcan en la hoja de la actividad.</p></div>`;
+  sh.scrollTop=sc0; updateDerived(id);
+}
+let ftimer=null;
+function setFv(id,key,val){
+  const cur=S.forms[id]||{v:{}}; const v=Object.assign({},cur.v||{});
+  if(val===""||val==null) delete v[key]; else v[key]=val;
+  S.forms[id]={v,upd:Date.now()}; updateDerived(id);
+  const e=$("#fsave"); if(e){ e.textContent="Guardando"; e.className="sync warn"; }
+  clearTimeout(ftimer); ftimer=setTimeout(()=>flushForm(id),700); S._pend=id;
+}
+async function flushForm(id){
+  clearTimeout(ftimer); if(!id||S._pend!==id) return; S._pend=null;
+  const doc=clean(S.forms[id]||{v:{}});
+  let ok=true;
+  if(DB){ try{ await DB.doc("forms/"+id).set(doc); }catch(e){ ok=false; toast("No se pudo guardar el formato."); } } else lsSave();
+  const el=$("#fsave"); if(el){ el.textContent=ok?"Guardado":"Sin guardar"; el.className="sync"+(ok?" live":" warn"); }
+}
+
+/* ---------- hoja de validación ---------- */
+function renderSheet(){
+  const sh=$("#sheet"); if(!S.open){ sh.hidden=true; return; }
+  if(S.who==="tec"&&S.open!=="m21"){ renderTecSheet(sh); return; }
+  if(document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName)&&sh.contains(document.activeElement)) return;
+  if(S.open==="m21"||S.form){ renderForm(sh); return; }
+  const a=D.acts.find(x=>x.id===S.open), r=rec(a.id), e=estado(a.id), d=S.dates[a.n-1], sc=sh.scrollTop;
+  const li=arr=>arr&&arr.length?`<ul>${arr.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"–";
+  const f=falta(a.id);
+  sh.hidden=false;
+  sh.innerHTML=`<div class="in sh"><div class="sh-top"><button class="iconbtn" data-act="close" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="ttl">Semana ${a.sem} · día ${a.dia} · ${fmtL(d)}<b>Actividad ${a.n} de 25</b></div>
+    <button class="iconbtn" data-act="nav" data-d="-1" aria-label="Actividad anterior" ${a.n===1?"disabled":""}><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="iconbtn" data-act="nav" data-d="1" aria-label="Actividad siguiente" ${a.n===25?"disabled":""}><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
+    <h3>${esc(a.tit)}</h3><p class="lead">${esc(a.act)}</p>
+    <dl class="kv">
+      <div><dt>Qué se entrega</dt><dd><b>${esc(a.ent)}</b></dd></div>
+      <div><dt>Quién hace qué</dt><dd><ul class="who">${rolesOf(a).map(r=>`<li><b>${esc(r)}</b><span>${esc(tarea(a,r))}</span></li>`).join("")}</ul></dd></div>
+      <div><dt>Criterio de aprobación (propuesto)</dt><dd>${esc(a.crit)}</dd></div>
+      <div><dt>Cómo se revisa</dt><dd>${li(a.rev)}</dd></div>
+      <div><dt>Recursos</dt><dd>${li(a.rec)}</dd></div>
+      <div><dt>Lecturas</dt><dd>${li(a.lect)}</dd></div>
+      <div><dt>Formato</dt><dd><span class="code">M${a.kit}</span> ${esc(D.kits[a.kit])}<br><span class="code">${esc(a.fmt)}</span></dd></div>
+    </dl>
+    <button class="btn fbtn" style="width:100%" data-act="fopen">Diligenciar formato M${a.kit}${formAny(a.id)?" · "+(formPct(a.id,F[a.n])==null?"con datos":formPct(a.id,F[a.n])+" %"):""}</button>
+    ${evalQuizHtml(a)}<h2>Resultado de la revisión</h2>
+    <div class="seg"><button class="r3" data-act="res" data-v="3" aria-pressed="${r.res===3}"><b>3</b>Aprobado</button><button class="r2" data-act="res" data-v="2" aria-pressed="${r.res===2}"><b>2</b>Con observaciones</button><button class="r1" data-act="res" data-v="1" aria-pressed="${r.res===1}"><b>1</b>No aprobado</button></div>
+    <h2>Entregable y firmas</h2>
+    <div class="stack">
+      <button class="tg" data-act="tg" data-k="ent" aria-pressed="${!!r.ent}"><span class="box">✓</span><span class="t">Entregable recibido<small>${esc(a.ent)}</small></span></button>
+      <button class="tg" data-act="tg" data-k="fc" aria-pressed="${!!r.fc}"><span class="box">✓</span><span class="t">Firma del colaborador</span></button>
+      <button class="tg" data-act="tg" data-k="fr" aria-pressed="${!!r.fr}"><span class="box">✓</span><span class="t">Firma del revisor<small>${esc(a.resp.join(", "))}</small></span></button>
+      <button class="tg" data-act="tg" data-k="fj" aria-pressed="${!!r.fj}"><span class="box">✓</span><span class="t">Firma del jefe inmediato<small>${esc(S.cfg.jefe||"Líder de Proyectos")}</small></span></button>
+    </div>
+    <label class="f" for="s-fecha">Fecha real de ejecución</label><input type="date" id="s-fecha" value="${esc(r.fecha||"")}">
+    <label class="f" for="s-obs">Observaciones</label><textarea id="s-obs" placeholder="Hallazgos, correcciones, acuerdos">${esc(r.obs||"")}</textarea>
+    <h2>Evidencia fotográfica</h2>
+    ${ASSETS?`<div class="stack"><input type="file" id="s-file" accept="image/*" multiple hidden><button class="btn ghost" data-act="pick">Agregar foto o imagen</button></div>`:`<p class="note">La carga de fotos no está disponible en esta vista.</p>`}
+    ${(r.ev&&r.ev.length)?`<div class="thumbs">${r.ev.map(id=>`<figure><a href="/_blob/${esc(id)}" target="_blank" rel="noopener"><img src="/_blob/${esc(id)}" alt="Evidencia" loading="lazy"></a><button data-act="delev" data-id="${esc(id)}" aria-label="Quitar foto">×</button></figure>`).join("")}</div>`:""}
+    <div class="status"><span>Estado:</span>${chip(e)}${f.length&&e!=="cumplida"?`<div class="need">Falta: ${esc(f.join("; "))}.</div>`:e==="cumplida"?`<div class="need">Actividad completa.</div>`:""}
+      ${r.res===1?`<button class="btn small" data-act="mkb" style="flex-basis:100%">Registrar brecha</button>`:""}</div>
+    <div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" data-act="close">Cerrar</button>${a.n<25?`<button class="btn" style="flex:1" data-act="nav" data-d="1">Siguiente</button>`:""}</div></div>`;
+  sh.scrollTop=sc;
+}
+function renderAll(){ renderHead(); renderTabs(); renderMain(); renderSheet(); }
+
+/* ---------- eventos ---------- */
+function openAct(id){ S.form=false; S.open=id; $("#sheet").scrollTop=0; renderSheet(); document.documentElement.style.overflow="hidden"; }
+function closeSheet(){ flushForm(S._pend); S.form=false; S.open=null; $("#sheet").hidden=true; document.documentElement.style.overflow=""; renderMain(); }
+function summaryText(){
+  const s=stats(), t=todayD(), nx=D.acts.find(a=>estado(a.id)!=="cumplida");
+  return ["Plan de abordaje – Técnico Integral de Geotube®"+(S.cfg.nombre?" ("+S.cfg.nombre+")":""),
+    "Corte: "+fmt(t)+" de "+t.getFullYear(),
+    "Avance: "+s.st.cumplida+" de 25 actividades cumplidas ("+Math.round(s.st.cumplida/25*100)+" %)",
+    "En curso: "+s.st.curso+" · Con brecha: "+s.st.brecha+" · Pendientes: "+s.st.pend,
+    "Entregables recibidos: "+s.ent+"/25 · Actividades con las 3 firmas: "+s.firm+"/25",
+    "Puntaje promedio: "+(s.prom==null?"sin calificar":s.prom.toFixed(1)+" de 3")+" · Brechas abiertas: "+s.abiertas,
+    "Plan: "+fmt(S.dates[0])+" al "+fmt(S.dates[24])+" · Cierre de brechas: "+fmt(S.cierre),
+    nx?"Siguiente por validar: S"+nx.sem+"-D"+nx.dia+" "+nx.tit+" ("+fmt(S.dates[nx.n-1])+")":"Todas las actividades cumplidas"].join("\n");
+}
+async function copyText(t){
+  try{ await navigator.clipboard.writeText(t); toast("Resumen copiado"); }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=t; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); let ok=false; try{ ok=document.execCommand("copy"); }catch(_){} ta.remove(); toast(ok?"Resumen copiado":"Selecciona y copia el texto manualmente"); }
+}
+document.addEventListener("click",async ev=>{
+  const b=ev.target.closest("[data-act]"); if(!b) return; const act=b.dataset.act;
+  if(act==="tab"){ S.tab=b.dataset.k; try{ localStorage.setItem("pag-tab",S.tab); }catch(e){} renderAll(); window.scrollTo(0,0); }
+  else if(act==="role"){ S.role=Number(b.dataset.k); renderMain(); }
+  else if(act==="filter"){ S.filter=b.dataset.k; renderMain(); }
+  else if(act==="open") openAct(b.dataset.id);
+  else if(act==="close") closeSheet();
+  else if(act==="nav"){ const a=D.acts.find(x=>x.id===S.open); const n=D.acts[a.n-1+Number(b.dataset.d)]; if(n){ S.open=n.id; S.form=false; $("#sheet").scrollTop=0; renderSheet(); } }
+  else if(act==="res"){ const v=Number(b.dataset.v), r=rec(S.open); saveAct(S.open,{res:r.res===v?0:v}); }
+  else if(act==="tg"){ const k=b.dataset.k, r=rec(S.open); saveAct(S.open,{[k]:!r[k]}); }
+  else if(act==="pick"){ $("#s-file").click(); }
+  else if(act==="delev"){ const r=rec(S.open); const id=b.dataset.id; saveAct(S.open,{ev:(r.ev||[]).filter(x=>x!==id)}); try{ await ASSETS.delete(id); }catch(e){} }
+  else if(act==="fopen"){ S.form=true; $("#sheet").scrollTop=0; renderSheet(); }
+  else if(act==="fm21"){ S.form=true; S.open="m21"; $("#sheet").scrollTop=0; document.documentElement.style.overflow="hidden"; renderSheet(); }
+  else if(act==="fback"){ flushForm(S._pend); if(S.open==="m21") closeSheet(); else { S.form=false; $("#sheet").scrollTop=0; renderSheet(); } }
+  else if(act==="fchk"){ const id=S.open==="m21"?"m21":S.open, k=b.dataset.fk; setFv(id,k,fv(id,k)==="1"?"":"1"); renderForm($("#sheet")); }
+  else if(act==="fadd"){ const id=S.open, sc=currentForm(), blk=sc.b.find(x=>x.k===b.dataset.k&&x.t==="tbl"); setFv(id,blk.k+"_n",String(rowsOf(blk,id)+1)); renderForm($("#sheet")); }
+  else if(act==="fcopy"){ const id=S.open, a=D.acts.find(x=>x.id===id); copyText(formText(id,currentForm(),a)); }
+  else if(act==="copy") copyText(summaryText());
+  else if(act==="thcopy") copyText(thText());
+  else if(act==="print"){ try{ window.print(); }catch(e){ toast("Usa la opción Imprimir del navegador"); } }
+  else if(act==="mkb"){ closeSheet(); S.tab="brechas"; renderAll(); const a=D.acts.find(x=>x.id===(ev.target.closest("[data-act]")&&S.lastOpen)); }
+  else if(act==="addb"){
+    const desc=$("#b-desc").value.trim(); if(!desc){ toast("Describe la brecha"); return; }
+    await addBrecha({act:$("#b-act").value,desc,acc:$("#b-acc").value.trim(),resp:$("#b-resp").value.trim(),fecha:$("#b-fecha").value||"",estado:"Abierta",ts:Date.now()});
+    ["#b-desc","#b-acc","#b-resp","#b-fecha"].forEach(s=>$(s).value="");
+  }
+  else if(act==="bstate"){ const x=S.brechas.find(y=>y.id===b.dataset.id); if(x) saveBrecha(x,{estado:b.dataset.s}); }
+});
+/* "mkb": recordar la actividad para preseleccionarla */
+document.addEventListener("click",ev=>{ const b=ev.target.closest('[data-act="mkb"]'); if(b){ S.lastOpen=S.open; setTimeout(()=>{ const s=$("#b-act"); if(s&&S.lastOpen) s.value=S.lastOpen; const d=$("#b-desc"); if(d) d.focus(); },30); } },true);
+document.addEventListener("change",async ev=>{
+  const t=ev.target;
+  if(t.dataset&&t.dataset.fk&&S.open&&t.closest("#sheet")){ setFv(S.open,t.dataset.fk,t.value.trim()===""?"":t.value); return; }
+  if(t.id==="s-fecha") saveAct(S.open,{fecha:t.value});
+  else if(t.id==="s-obs") saveAct(S.open,{obs:t.value});
+  else if(t.id==="c-nom") saveCfg({nombre:t.value.trim()});
+  else if(t.id==="c-ini"&&t.value) saveCfg({inicio:t.value});
+  else if(t.id==="c-jefe") saveCfg({jefe:t.value.trim()});
+  else if(t.id==="c-resp") saveCfg({resp:t.value.trim()});
+  else if(t.id==="s-file"&&t.files.length){
+    const id=S.open; const ids=(rec(id).ev||[]).slice(); toast("Subiendo…");
+    for(const f of t.files){ try{ const r=await ASSETS.upload(f); ids.push(r.id); }catch(e){ toast(e&&e.code==="too_large"?"La imagen es demasiado grande":"No se pudo subir la imagen"); } }
+    t.value=""; saveAct(id,{ev:ids});
+  }
+});
+document.addEventListener("input",ev=>{ const t=ev.target; if(t.dataset&&t.dataset.fk&&t.tagName!=="SELECT"&&S.open&&t.closest("#sheet")) setFv(S.open,t.dataset.fk,t.value); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&S.open) closeSheet(); });
+
+/* ---------- arranque ---------- */
+async function boot(){
+  computeDates(); renderAll();
+  let c=null;
+  try{ c=window.claude&&window.claude.use?window.claude:null; }catch(e){}
+  if(c){ try{ DB=await c.use("db"); }catch(e){ DB=null; } try{ ASSETS=await c.use("assets"); }catch(e){ ASSETS=null; } }
+  if(!DB){ S.mode="local"; lsLoad(); computeDates(); renderAll(); return; }
+  S.mode="db";
+  const fail=()=>{ if(S.mode==="db"){ S.mode="local"; DB=null; lsLoad(); computeDates(); renderAll(); } };
+  DB.doc("cfg/plan").onSnapshot(s=>{ if(s.exists){ S.cfg=Object.assign({},S.cfg,s.data()); computeDates(); } renderAll(); },fail);
+  DB.collection("acts").onSnapshot(s=>{ const m={}; s.docs.forEach(d=>m[d.id]=d.data()); S.acts=m; renderAll(); },fail);
+  DB.collection("forms").onSnapshot(s=>{ const m=Object.assign({},S.forms); s.docs.forEach(d=>{ const x=d.data(), l=m[d.id]; if(!(l&&l.upd>(x.upd||0))) m[d.id]=x; }); S.forms=m; renderAll(); },fail);
+  DB.collection("brechas").onSnapshot(s=>{ S.brechas=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },fail);
+  DB.collection("quiz").onSnapshot(s=>{ const m={}; s.docs.forEach(d=>m[d.id]=d.data()); S.quiz=m; renderAll(); },fail);
+  renderAll();
+}
+window.__ready.then(boot);
+</script>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, addDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app); auth.languageCode = "es";
+const fs = getFirestore(app);
+const L = id => document.getElementById(id);
+function msg(id, t, err){ const m=L(id); m.textContent=t; m.className="msg"+(err?" err":""); }
+const ERR = { "auth/invalid-credential":"Correo o contraseña incorrectos.", "auth/wrong-password":"Correo o contraseña incorrectos.", "auth/user-not-found":"Ese correo no tiene cuenta. Toca «Crear mi cuenta».", "auth/email-already-in-use":"Ese correo ya tiene cuenta. Toca «Entrar».", "auth/weak-password":"La contraseña debe tener al menos 6 caracteres.", "auth/invalid-email":"El correo no es válido.", "auth/too-many-requests":"Demasiados intentos. Espera unos minutos." };
+const em = e => ERR[e && e.code] || "No se pudo completar. Revisa la conexión e intenta de nuevo.";
+
+/* Adaptador: misma interfaz que usa la app (doc/collection, set, add, onSnapshot) */
+const wrapDoc = s => ({ id:s.id, exists:s.exists(), data:()=>s.data() });
+const DBA = {
+  doc(path){ const r=doc(fs, ...path.split("/"));
+    return { set:data=>setDoc(r,data), onSnapshot:(cb,err)=>onSnapshot(r, s=>cb(wrapDoc(s)), err) }; },
+  collection(name){ const r=collection(fs,name);
+    return { add:data=>addDoc(r,data), onSnapshot:(cb,err)=>onSnapshot(r, s=>cb({docs:s.docs.map(wrapDoc)}), err) }; }
+};
+window.claude = { use: async name => { if(name==="db") return DBA; throw new Error("no disponible"); } };
+window.salir = () => signOut(auth).then(()=>location.reload());
+
+let started=false;
+function show(user){
+  const ok = user && user.emailVerified;
+  L("login").hidden = !!ok;
+  L("lg-form").hidden = !!user;
+  L("lg-verify").hidden = !(user && !user.emailVerified);
+  if(user && !user.emailVerified) L("lg-vmail").textContent = user.email;
+  if(ok && !started){ started=true; window.__go(); }
+}
+onAuthStateChanged(auth, show);
+
+const creds = () => [L("lg-mail").value.trim().toLowerCase(), L("lg-pass").value];
+async function busy(btn, fn){ btn.disabled=true; try{ await fn(); } finally { btn.disabled=false; } }
+L("lg-in").onclick = () => busy(L("lg-in"), async () => {
+  const [m,p]=creds(); if(!m||!p){ msg("lg-msg","Escribe tu correo y tu contraseña.",true); return; }
+  try{ await signInWithEmailAndPassword(auth,m,p); }catch(e){ msg("lg-msg",em(e),true); }
+});
+L("lg-pass").addEventListener("keydown", e => { if(e.key==="Enter") L("lg-in").click(); });
+L("lg-new").onclick = () => busy(L("lg-new"), async () => {
+  const [m,p]=creds(); if(!m||!p){ msg("lg-msg","Escribe tu correo y una contraseña de al menos 6 caracteres.",true); return; }
+  try{ const c=await createUserWithEmailAndPassword(auth,m,p); await sendEmailVerification(c.user); show(c.user); }catch(e){ msg("lg-msg",em(e),true); }
+});
+L("lg-reset").onclick = () => busy(L("lg-reset"), async () => {
+  const [m]=creds(); if(!m){ msg("lg-msg","Escribe tu correo y vuelve a tocar «Olvidé la contraseña».",true); return; }
+  try{ await sendPasswordResetEmail(auth,m); msg("lg-msg","Te enviamos un correo para crear una nueva contraseña."); }catch(e){ msg("lg-msg",em(e),true); }
+});
+L("lg-ok").onclick = () => busy(L("lg-ok"), async () => {
+  const u=auth.currentUser; if(!u) return; await u.reload(); await u.getIdToken(true);
+  if(auth.currentUser.emailVerified) show(auth.currentUser); else msg("lg-vmsg","Todavía no aparece verificado. Abre el enlace del correo y vuelve a intentar.",true);
+});
+L("lg-resend").onclick = () => busy(L("lg-resend"), async () => {
+  try{ await sendEmailVerification(auth.currentUser); msg("lg-vmsg","Correo reenviado."); }catch(e){ msg("lg-vmsg",em(e),true); }
+});
+L("lg-out").onclick = () => signOut(auth);
+</script>
+</body></html>
